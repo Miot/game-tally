@@ -11,21 +11,18 @@ importers:
       '@fontsource-variable/orbitron':
         specifier: ^5.3.0
         version: 5.3.0
-      '@trystero-p2p/mqtt':
-        specifier: ^0.25.4
-        version: 0.25.4
       '@vueuse/core':
         specifier: ^15.0.0
         version: 15.0.0(vue@3.5.43(typescript@5.9.3))
+      mqtt:
+        specifier: ^5.16.0
+        version: 5.16.0
       pinia:
         specifier: ^4.0.3
         version: 4.0.3(@vue/devtools-api@8.2.1)(typescript@5.9.3)(vue@3.5.43(typescript@5.9.3))
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
-      trystero:
-        specifier: ^0.25.4
-        version: 0.25.4
       vant:
         specifier: ^4.10.2
         version: 4.10.2(vue@3.5.43(typescript@5.9.3))
@@ -929,9 +926,6 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@noble/secp256k1@3.2.0':
-    resolution: {integrity: sha512-Z3ZAWOTxJ0EuTuZTi7Y69iK7GgrLHh8sgm45lVDhg/b3Nk1TpAiKhick2KkZisHuupeepSkyIydN/J459SdX1w==}
-
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1341,15 +1335,6 @@ packages:
   '@trickfilm400/rollup-plugin-off-main-thread@3.0.0-pre1':
     resolution: {integrity: sha512-/67zpWDBLV+oYAEL682s1ktXL0HgqX76f6gaVGkGnVZlBbm1zd0v4Bz8MFF2GGhoX9rvfq3KSQHubFHwa6w6/Q==}
     engines: {node: '>=12'}
-
-  '@trystero-p2p/core@0.25.4':
-    resolution: {integrity: sha512-ehvSL1FqW962XyEctXngeDF/IOM1bWmfCKBNR4vwmVa0JGfM0+dlY4TEzSEGghYp3qqGCrpFIVTxdvlBUGVO6Q==}
-
-  '@trystero-p2p/mqtt@0.25.4':
-    resolution: {integrity: sha512-wy13y2+nd2gY4yPNjQ+8hogy9POkegbBpEWGwUJzs0eETRtI5alL2QM+WMVk8zVOruzzGfPjx/xmot/F8MjODg==}
-
-  '@trystero-p2p/nostr@0.25.4':
-    resolution: {integrity: sha512-QDox1VVHl0ro/CLfQVUtMS9EQbtJhQM7CCsO4SGv9KrPBT+x3bmOqQ4Y6iugsLzQ6sW+a2cwUTxjDRz/BywqMg==}
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -3295,9 +3280,6 @@ packages:
     resolution: {integrity: sha512-bLVMLPtstlZ4iMQHpFHTR7GAGj2jxi8Dg0s2h2MafAE4uSWF98FC/3MomU51iQAMf8/qDUbKWf5GxuvvVcXEhw==}
     engines: {node: '>=20'}
 
-  trystero@0.25.4:
-    resolution: {integrity: sha512-tFYn/fO1kBeSKLUxRPKHH2n5jIuz9zlPPF9SmCVrGBiPNDGtFZyHuQONMUwftnCclTWlVsLoTus5/6eHhVEg+Q==}
-
   ts-api-utils@2.5.0:
     resolution: {integrity: sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==}
     engines: {node: '>=18.12'}
@@ -4691,8 +4673,6 @@ snapshots:
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
-  '@noble/secp256k1@3.2.0': {}
-
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -4956,22 +4936,6 @@ snapshots:
       json5: 2.2.3
       magic-string: 0.30.21
       string.prototype.matchall: 4.1.0
-
-  '@trystero-p2p/core@0.25.4': {}
-
-  '@trystero-p2p/mqtt@0.25.4':
-    dependencies:
-      '@trystero-p2p/core': 0.25.4
-      mqtt: 5.16.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
-  '@trystero-p2p/nostr@0.25.4':
-    dependencies:
-      '@noble/secp256k1': 3.2.0
-      '@trystero-p2p/core': 0.25.4
 
   '@types/chai@5.2.3':
     dependencies:
@@ -7117,10 +7081,6 @@ snapshots:
     dependencies:
       punycode: 2.3.1
     optional: true
-
-  trystero@0.25.4:
-    dependencies:
-      '@trystero-p2p/nostr': 0.25.4
 
   ts-api-utils@2.5.0(typescript@5.9.3):
     dependencies:

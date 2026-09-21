@@ -10,7 +10,7 @@ export interface RelayInfo {
 
 /**
  * 房间传输层：屏蔽底层 P2P 库，业务只关心「广播 / 定向发送 / 对等端进出」。
- * 生产实现为 Trystero，测试实现为内存总线。
+ * 生产实现走公共 MQTT 中继，测试实现为内存总线。
  */
 export interface RoomTransport {
   readonly selfId: string

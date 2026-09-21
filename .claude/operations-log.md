@@ -167,3 +167,23 @@
 - 启用 Pages（build_type=workflow），手动触发部署：build 26s、deploy 8s，均成功。
 - 线上校验：首页与入口脚本、manifest.webmanifest、sw.js、favicon.svg 全部 200；Playwright 访问线上地址跑通建房、起名、记分（-5 后为 25），封面加载成功，控制台无错误。
 - 顺带消除工作流的 Node 20 弃用警告：checkout v4→v7、pnpm/action-setup v4→v6、setup-node v4→v7、configure-pages v5→v6、upload-pages-artifact v3→v5、deploy-pages v4→v5。
+
+## 2026-09-21 09:00 同步方案由 WebRTC 改为 MQTT 中继直传
+
+### 问题
+用户反馈电脑与手机互相连不上。线上诊断：四个中继全部 open，两端通过中继**互相发现了对方**（日志里带对方 peerId），失败在 WebRTC 直连，Trystero 报 "could not connect to peer … configure TURN servers"。用户确认网络为电脑 Wi-Fi、手机蜂窝。
+
+### 定性
+蜂窝网络的运营商 NAT 基本为对称型，STUN 无法穿透，必须 TURN 中转。实测所有已知免费公共 TURN（openrelay / staticauth.openrelay.metered.ca 的 80/443/443-tcp）均返回 err701/err400，公开凭证已失效。即协议层面无解，非代码缺陷。
+
+### 方案
+既然信令本来就走公共 MQTT 中继，而计分数据仅数百字节，直接用中继转发即可绕开 NAT 穿透。
+- 新增 src/sync/mqtt-transport.ts，实现既有的 RoomTransport 接口，room store 与测试替身均无需改动。
+- 协议：join / beat / bye / msg 四类消息，8 秒心跳、26 秒静默判离线、LWT 兜底异常断开；同连三个中继做冗余，按消息 id 去重。
+- 移除 trystero 与 @trystero-p2p/mqtt 依赖，删除 trystero-transport.ts；网络配置由 STUN/TURN/信令策略简化为中继列表。
+- 修正：中继状态改用 mqtt.js 的 connected/reconnecting 标志，浏览器端拿不到底层 socket 的 readyState。
+
+### 验证
+- 中继实测：broker-cn.emqx.io 连接 1.9s、broker.emqx.io 1.5s、broker.hivemq.com 3.3s，往返均约 380ms，260B 数据一致；test.mosquitto.org 连接失败，已移出默认列表。
+- 单人入房 0.5s，3.5s 内三个中继全部 open，状态灯正确。
+- 两端同步：互相发现后改分即同步，他人视角只读，6.4s 跑完端到端用例。

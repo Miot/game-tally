@@ -20,7 +20,7 @@ import RoomQrSheet from '@/components/RoomQrSheet.vue'
 import { defaultGame, type CounterId } from '@/games'
 import { useRoomStore } from '@/stores/room'
 import { useSettingsStore } from '@/stores/settings'
-import { createTrysteroTransport } from '@/sync/trystero-transport'
+import { createMqttTransport } from '@/sync/mqtt-transport'
 import { isValidRoomCode, normalizeRoomCode } from '@/utils/room-code'
 
 const props = defineProps<{ code: string }>()
@@ -51,7 +51,7 @@ async function enterRoom(): Promise<void> {
       code: code.value,
       game,
       profile: { ...settings.profile },
-      transport: createTrysteroTransport(settings.network),
+      transport: createMqttTransport(settings.network.brokers),
     })
   } catch (error) {
     console.error(error)

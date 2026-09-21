@@ -162,3 +162,14 @@
 | 版本 | v1.0.0 已打标签并推送 |
 
 遗留：仓库为部署需要已由私有改为公开；真机间 WebRTC 直连仍需两部手机实测。
+
+## 增量验证（2026-09-21 09:00）：同步改为 MQTT 中继直传
+
+| 项目 | 结果 |
+|------|------|
+| `pnpm test` | 5 个用例通过（传输层抽象未变，测试无需改动） |
+| `pnpm test:e2e` | 3 个用例通过 |
+| `E2E_NETWORK=1 … sync.spec.ts` | 通过，6.4 秒（WebRTC 版本曾需 20 秒且时好时坏） |
+| `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` / `pnpm build` | 通过 |
+
+同步链路不再依赖 NAT 穿透，一端 Wi-Fi、一端蜂窝网络可用。依赖减少：移除 trystero 与 @trystero-p2p/mqtt，新增 mqtt。

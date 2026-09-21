@@ -6,7 +6,7 @@ type PeerHandler = (peerId: string) => void
 
 /**
  * 内存总线：同一进程内多个传输实例通过它互相可见，用于单元与集成测试。
- * 语义与 Trystero 保持一致：入房后彼此触发 onPeerJoin，离开触发 onPeerLeave。
+ * 语义与真实传输一致：入房后彼此触发 onPeerJoin，离开触发 onPeerLeave。
  */
 export class MemoryHub {
   private readonly rooms = new Map<string, Set<MemoryTransport>>()

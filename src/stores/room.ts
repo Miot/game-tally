@@ -60,6 +60,8 @@ export const useRoomStore = defineStore('room', () => {
   const presence = ref<Record<string, Presence>>({})
   const peerCount = ref(0)
   const relays = ref<RelayInfo[]>([])
+  /** 当前传输层的连接标识，用于连接诊断 */
+  const selfId = ref<string | null>(null)
   const phase = ref<'idle' | 'joining' | 'joined' | 'error'>('idle')
   const viewingPlayerId = ref<string | null>(null)
   const undoStack = ref<UndoEntry[]>([])
@@ -241,6 +243,7 @@ export const useRoomStore = defineStore('room', () => {
     storage.setItem(LAST_ROOM_KEY, options.code)
 
     transport = options.transport
+    selfId.value = options.transport.selfId
     disposers = [
       transport.onMessage(handleMessage),
       transport.onPeerJoin(handlePeerJoin),
@@ -272,6 +275,7 @@ export const useRoomStore = defineStore('room', () => {
       await transport.leave()
       transport = null
     }
+    selfId.value = null
     if (options.forget && storage) storage.removeItem(LAST_ROOM_KEY)
     peerToPlayer.clear()
     phase.value = 'idle'
@@ -383,6 +387,7 @@ export const useRoomStore = defineStore('room', () => {
     presence,
     peerCount,
     relays,
+    selfId,
     phase,
     status,
     viewingPlayerId,

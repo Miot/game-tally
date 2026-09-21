@@ -1,6 +1,6 @@
 # 局分 GameTally
 
-桌游 token 计分器：同桌玩家各自用手机打开网页，创建或加入房间后手动增减自己的 token，所有人实时看到彼此的分数。没有后端，托管在 GitHub Pages，手机之间通过 WebRTC 直连同步。
+桌游 token 计分器：同桌玩家各自用手机打开网页，创建或加入房间后手动增减自己的 token，所有人实时看到彼此的分数。没有自建后端，托管在 GitHub Pages，设备之间经公共 MQTT 中继同步。
 
 第一版内置《月球殖民地》（Moon Colony Bloodbath，BGG #425549），记录幸存者、钱、食物三项。
 
@@ -16,17 +16,16 @@
 
 ## 技术栈
 
-Vue 3 · TypeScript · Vite · Pinia · Vue Router（hash 模式）· Vant 4 · Tailwind CSS 4 · Trystero（WebRTC + 公共中继信令）· vite-plugin-pwa。
+Vue 3 · TypeScript · Vite · Pinia · Vue Router（hash 模式）· Vant 4 · Tailwind CSS 4 · MQTT.js（公共中继转发）· vite-plugin-pwa。
 
 设计说明与决策记录见 [docs/plan-v1.md](docs/plan-v1.md)。
 
-## 网络说明（中国大陆）
+## 网络说明
 
-- 默认信令策略为 MQTT，中继列表包含 `broker-cn.emqx.io`；分数数据不经过中继，只用于让手机找到彼此。
-- 默认 STUN 使用大陆可达节点（bilibili、cdnbye），境外节点作为补充。
-- 同一 Wi-Fi 下直连最稳；跨运营商蜂窝网络若无法直连，可在「设置」里填写 TURN 中转服务器。
-- 「设置 → 连接诊断」可查看各中继连接状态与对等端数量；房间菜单「重新连接」会重新入房并立即向中继公告。
-- token 图标取自 Rio Grande Games 官方规则书（MCB.pdf）中的组件图；房间背景按游戏定制，《月球殖民地》为月面风格。
+- 计分数据经公共 MQTT 中继转发，默认同时连三个做冗余，大陆节点 `broker-cn.emqx.io` 在前。
+- 不使用 WebRTC，因此不需要 NAT 穿透，也不需要 STUN/TURN。任意网络组合都能连上，包括一端 Wi-Fi、另一端蜂窝网络。
+- 单条状态消息约 260 字节，往返延迟约 400 毫秒。
+- 中继列表可在「设置 → 中继服务器」里改；连接状态见「设置 → 连接诊断」。
 
 ## 本地开发
 
@@ -43,7 +42,11 @@ pnpm generate-pwa-assets   # 由 public/favicon.svg 重新生成 PWA 图标
 
 ## 真实同步的验证
 
-手机之间的 WebRTC 直连不在自动化测试范围内，用两部真机验证：同一 Wi-Fi 下一人创建房间、另一人扫码加入，双方计数应在一秒内互相可见；再让一部切到蜂窝网络重试。连接状态见「设置 → 连接诊断」。
+```bash
+E2E_NETWORK=1 pnpm test:e2e tests/e2e/sync.spec.ts
+```
+
+该用例开两个浏览器上下文入同一房间，验证互相可见、他人视角只读、离线检测。依赖外部公共中继，因此默认跳过。
 
 ## 部署
 

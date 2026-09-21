@@ -2,6 +2,7 @@ import { useStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
 
+import { DEFAULT_BROKERS } from '@/sync/mqtt-transport'
 import { createPlayerId } from '@/utils/id'
 
 /** 玩家身份：playerId 跨会话稳定，用于在房间里识别同一个人 */
@@ -12,35 +13,13 @@ export interface Profile {
   avatar: number
 }
 
-export interface TurnServer {
-  urls: string
-  username: string
-  credential: string
-}
-
-export type SignalingStrategy = 'mqtt' | 'nostr'
-
 export interface NetworkSettings {
-  strategy: SignalingStrategy
-  stunUrls: string[]
-  turnServers: TurnServer[]
+  /** 计分数据经这些公共 MQTT 中继转发，多个并连做冗余 */
+  brokers: string[]
 }
 
-/**
- * 默认网络配置面向中国大陆：MQTT 信令（含 broker-cn.emqx.io），
- * STUN 优先使用大陆可达节点，境外节点作为补充。
- */
 export function defaultNetworkSettings(): NetworkSettings {
-  return {
-    strategy: 'mqtt',
-    stunUrls: [
-      'stun:stun.chat.bilibili.com:3478',
-      'stun:stun.cdnbye.com:3478',
-      'stun:stun.cloudflare.com:3478',
-      'stun:stun.l.google.com:19302',
-    ],
-    turnServers: [],
-  }
+  return { brokers: [...DEFAULT_BROKERS] }
 }
 
 export const PROFILE_STORAGE_KEY = 'gametally:profile'

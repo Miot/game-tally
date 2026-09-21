@@ -5,35 +5,21 @@ import { useRouter } from 'vue-router'
 
 import ProfileEditor from '@/components/ProfileEditor.vue'
 import { useRoomStore } from '@/stores/room'
-import { useSettingsStore, type SignalingStrategy } from '@/stores/settings'
-import { selfId } from '@trystero-p2p/mqtt'
+import { useSettingsStore } from '@/stores/settings'
 
 const router = useRouter()
 const settings = useSettingsStore()
 const room = useRoomStore()
 
-const stunText = computed({
-  get: () => settings.network.stunUrls.join('\n'),
+const brokerText = computed({
+  get: () => settings.network.brokers.join('\n'),
   set: (value: string) => {
-    settings.network.stunUrls = value
+    settings.network.brokers = value
       .split('\n')
       .map((line) => line.trim())
       .filter((line) => line.length > 0)
   },
 })
-
-const strategyOptions: Array<{ value: SignalingStrategy; label: string; hint: string }> = [
-  { value: 'mqtt', label: 'MQTT', hint: '推荐，含大陆可达的 broker-cn.emqx.io' },
-  { value: 'nostr', label: 'Nostr', hint: '境外中继更多，大陆多数不可达' },
-]
-
-function addTurn(): void {
-  settings.network.turnServers.push({ urls: '', username: '', credential: '' })
-}
-
-function removeTurn(index: number): void {
-  settings.network.turnServers.splice(index, 1)
-}
 
 function resetNetwork(): void {
   settings.resetNetwork()
@@ -77,59 +63,20 @@ function rebroadcast(): void {
     </section>
 
     <section class="panel p-4">
-      <h2 class="mb-1 font-display text-xs tracking-[0.3em] text-ink-2 uppercase">信令策略</h2>
-      <p class="mb-3 text-xs text-ink-3">
-        只用于让手机之间找到彼此，分数数据不经过中继。下次进入房间生效。
+      <h2 class="mb-1 font-display text-xs tracking-[0.3em] text-ink-2 uppercase">中继服务器</h2>
+      <p class="mb-2 text-xs text-ink-3">
+        计分数据经这些公共 MQTT 中继转发，多个并连做冗余。每行一个，下次进入房间生效。
       </p>
-      <van-radio-group v-model="settings.network.strategy">
-        <van-cell-group inset>
-          <van-cell
-            v-for="option in strategyOptions"
-            :key="option.value"
-            :title="option.label"
-            :label="option.hint"
-            clickable
-            @click="settings.network.strategy = option.value"
-          >
-            <template #right-icon>
-              <van-radio :name="option.value" />
-            </template>
-          </van-cell>
-        </van-cell-group>
-      </van-radio-group>
-    </section>
-
-    <section class="panel p-4">
-      <h2 class="mb-1 font-display text-xs tracking-[0.3em] text-ink-2 uppercase">STUN 服务器</h2>
-      <p class="mb-2 text-xs text-ink-3">每行一个，用于穿透运营商 NAT；默认列表大陆优先。</p>
       <van-field
-        v-model="stunText"
+        v-model="brokerText"
         type="textarea"
-        rows="4"
+        rows="3"
         autosize
-        placeholder="stun:host:port"
+        placeholder="wss://host:port/mqtt"
       />
-    </section>
-
-    <section class="panel p-4">
-      <div class="mb-1 flex items-center justify-between">
-        <h2 class="font-display text-xs tracking-[0.3em] text-ink-2 uppercase">TURN 中转</h2>
-        <button type="button" class="tap text-xs text-accent-deep" @click="addTurn">+ 添加</button>
-      </div>
-      <p class="mb-2 text-xs text-ink-3">跨运营商蜂窝网络直连失败时才需要。留空则不使用。</p>
-      <div
-        v-for="(server, index) in settings.network.turnServers"
-        :key="index"
-        class="mb-2 rounded-xl border border-line p-2"
-      >
-        <van-field v-model="server.urls" label="地址" placeholder="turn:host:3478" />
-        <van-field v-model="server.username" label="用户名" />
-        <van-field v-model="server.credential" label="密码" />
-        <button type="button" class="tap mt-1 text-xs text-alert" @click="removeTurn(index)">
-          删除
-        </button>
-      </div>
-      <van-button size="small" plain round @click="resetNetwork">恢复默认网络配置</van-button>
+      <van-button class="mt-3" size="small" plain round @click="resetNetwork">
+        恢复默认中继
+      </van-button>
     </section>
 
     <section class="panel p-4">
@@ -137,7 +84,7 @@ function rebroadcast(): void {
       <dl class="flex flex-col gap-1 text-xs">
         <div class="flex justify-between gap-2">
           <dt class="text-ink-2">本机对等端 ID</dt>
-          <dd class="truncate font-mono text-ink-2">{{ selfId }}</dd>
+          <dd class="truncate font-mono text-ink-2">{{ room.selfId || '未连接' }}</dd>
         </div>
         <div class="flex justify-between gap-2">
           <dt class="text-ink-2">房间状态</dt>
