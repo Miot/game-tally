@@ -67,7 +67,6 @@ const sharedActions = computed(() =>
       >
         {{ game.elimination.label }}
       </span>
-      <span v-if="lastChangeText" class="ml-auto truncate text-ink-3">{{ lastChangeText }}</span>
       <button
         v-if="editable"
         type="button"

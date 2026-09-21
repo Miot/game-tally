@@ -119,7 +119,7 @@
 | UI | Vant 4 + Tailwind CSS 4 | 最新 | 见 D3 |
 | PWA | vite-plugin-pwa | 1.3.0 | manifest + service worker |
 | 二维码 | qrcode | 1.5.4 | 生成房间链接二维码 |
-| 测试 | Vitest + @vue/test-utils + Playwright | 最新 | 见 3.8 |
+| 测试 | Vitest + Playwright | 最新 | 见 3.8 |
 | 规范 | ESLint（flat config）+ Prettier | 最新 | 提交前 lint-staged |
 | 包管理 | pnpm | 10.33.0（本机） | node 20.20.2（本机） |
 
@@ -224,7 +224,7 @@ game-tally/
 │  ├─ theme/                      # tokens.css、fonts
 │  └─ utils/                      # roomCode、id、storage
 ├─ tests/e2e/                     # Playwright
-└─ *.spec.ts 与源码同目录         # Vitest
+└─ stores/room.spec.ts            # Vitest：多端同步
 ```
 
 ### 3.7 部署（GitHub Pages）
@@ -238,10 +238,8 @@ game-tally/
 
 | 层 | 工具 | 覆盖 |
 |----|------|------|
-| 单元 | Vitest | 游戏定义校验、派生值、版本合并、事件流去重、房间码生成 |
-| 组件 | Vitest + @vue/test-utils | 计数器边界（不低于 0、步进）、撤销重做 |
-| 集成 | Vitest + memory-transport | 两个 store 实例通过内存传输互发快照、迟到加入、离线重连 |
-| 端到端 | Playwright（iPhone 视口） | 单机模式完整一局；两个浏览器上下文通过真实 Trystero 入同一房间并互见分数（标记为可跳过的网络用例） |
+| 集成 | Vitest + memory-transport | 多端同步：广播合并、迟到快照、离线保留、缓存恢复、只读约束 |
+| 端到端 | Playwright（手机视口） | 建房、记分、上下限、撤销、刷新恢复、邀请、回到房间、链接进房、无效房间码 |
 | 真机冒烟 | 手工脚本 | 两部手机：同 Wi-Fi、各自蜂窝网络、一方切后台再回来 |
 
 ### 3.9 性能与体积预算

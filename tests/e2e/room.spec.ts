@@ -3,9 +3,10 @@ import { expect, test } from '@playwright/test'
 test.describe('房间流程', () => {
   test('创建房间、记分、撤销、刷新恢复、打开邀请', async ({ page }) => {
     await page.goto('./')
-    await page.getByPlaceholder('你的昵称').fill('阿波罗')
     await page.getByTestId('create-room').click()
     await expect(page).toHaveURL(/#\/r\/[A-HJ-NP-Z2-9]{4}$/)
+    await page.getByPlaceholder('你的昵称').fill('阿波罗')
+    await page.getByTestId('confirm-profile').click()
 
     const survivors = page.getByTestId('counter-survivors-value')
     await expect(survivors).toHaveText('30')
@@ -21,6 +22,13 @@ test.describe('房间流程', () => {
     await page.getByTestId('quick-farm').click()
     await expect(page.getByTestId('counter-food-value')).toHaveText('8')
 
+    // 计数不会低于下限，到达下限后减少按钮禁用
+    await page.getByTestId('counter-money-dec-5').click()
+    await expect(money).toHaveText('0')
+    await expect(page.getByTestId('counter-money-dec-1')).toBeDisabled()
+    await page.getByTestId('quick-mine').click()
+    await expect(money).toHaveText('4')
+
     await page.reload()
     await expect(survivors).toHaveText('29')
     await expect(page.getByTestId('counter-food-value')).toHaveText('8')
@@ -29,6 +37,11 @@ test.describe('房间流程', () => {
     await expect(page.getByRole('img', { name: '房间二维码' })).toBeVisible()
     const code = await page.getByTestId('room-code').innerText()
     await expect(page.getByTestId('qr-room-code')).toHaveText(code.trim())
+
+    await page.goto('./')
+    await expect(page.getByTestId('resume-room')).toContainText(code.trim())
+    await page.getByTestId('resume-room').click()
+    await expect(page.getByTestId('room-code')).toHaveText(code.trim())
   })
 
   test('通过链接进入房间时先起名再进入', async ({ page }) => {

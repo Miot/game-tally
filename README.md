@@ -33,14 +33,17 @@ Vue 3 · TypeScript · Vite · Pinia · Vue Router（hash 模式）· Vant 4 · 
 ```bash
 pnpm install
 pnpm dev            # 本地开发服务器
-pnpm test           # Vitest 单元与集成测试
+pnpm test           # Vitest：多端状态同步
 pnpm test:e2e       # Playwright 端到端（首次需 pnpm exec playwright install chromium）
-E2E_NETWORK=1 pnpm test:e2e tests/e2e/sync.spec.ts   # 双设备经公共 MQTT 中继真实同步（需联网；本机开着 VPN 时 ICE 直连会不稳定）
 pnpm lint:check     # ESLint
 pnpm format:check   # Prettier
 pnpm build          # 类型检查 + 构建到 dist/
 pnpm generate-pwa-assets   # 由 public/favicon.svg 重新生成 PWA 图标
 ```
+
+## 真实同步的验证
+
+手机之间的 WebRTC 直连不在自动化测试范围内，用两部真机验证：同一 Wi-Fi 下一人创建房间、另一人扫码加入，双方计数应在一秒内互相可见；再让一部切到蜂窝网络重试。连接状态见「设置 → 连接诊断」。
 
 ## 部署
 

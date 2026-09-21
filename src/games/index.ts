@@ -1,8 +1,7 @@
 import { moonColonyBloodbath } from './moon-colony-bloodbath'
-import { assertGameDefinition, type GameDefinition } from './types'
+import type { GameDefinition } from './types'
 
 const definitions: readonly GameDefinition[] = [moonColonyBloodbath]
-definitions.forEach(assertGameDefinition)
 
 export const games: ReadonlyMap<string, GameDefinition> = new Map(
   definitions.map((game) => [game.id, game]),

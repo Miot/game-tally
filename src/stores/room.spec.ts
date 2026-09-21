@@ -5,8 +5,13 @@ import { moonColonyBloodbath } from '@/games/moon-colony-bloodbath'
 import { MemoryHub } from '@/sync/memory-transport'
 import { MemoryStorage } from '@/test-utils/memory-storage'
 
-import { BROADCAST_DELAY_MS, LAST_ROOM_KEY, roomCacheKey, useRoomStore } from './room'
+import { BROADCAST_DELAY_MS, useRoomStore } from './room'
 import type { Profile } from './settings'
+
+/*
+ * 只覆盖端到端测不到的一维：多个玩家之间的状态同步。
+ * 单设备上的计数边界、撤销、排行由 tests/e2e/room.spec.ts 在真实页面上验证。
+ */
 
 const CODE = 'K7PQ'
 
@@ -18,9 +23,10 @@ function createPlayer(hub: MemoryHub, id: string, storage = new MemoryStorage())
   const transport = hub.createTransport(`peer-${id}`)
   const open = () =>
     store.open({ code: CODE, game: moonColonyBloodbath, profile, transport, storage })
-  return { store, profile, transport, storage, open }
+  return { store, storage, open }
 }
 
+/** 推进到节流窗口之后，让合并后的状态真正发出 */
 const flush = () => vi.advanceTimersByTimeAsync(BROADCAST_DELAY_MS + 10)
 
 describe('useRoomStore', () => {
@@ -35,28 +41,19 @@ describe('useRoomStore', () => {
     vi.useRealTimers()
   })
 
-  it('入房后创建自己的初始状态并记录上次房间', async () => {
-    const a = createPlayer(hub, 'A')
-    await a.open()
-    expect(a.store.me?.counters).toEqual({ survivors: 30, money: 4, food: 4 })
-    expect(a.store.viewingPlayerId).toBe('player-A')
-    expect(a.store.isViewingSelf).toBe(true)
-    expect(a.storage.getItem(LAST_ROOM_KEY)).toBe(CODE)
-    expect(a.store.status).toBe('connected')
-  })
-
-  it('两位玩家互相看到对方，修改后经广播同步', async () => {
+  it('两位玩家互相看到对方，连续修改合并为一次广播', async () => {
     const a = createPlayer(hub, 'A')
     const b = createPlayer(hub, 'B')
     await a.open()
     await b.open()
-    expect(Object.keys(a.store.players).sort()).toEqual(['player-A', 'player-B'])
+
+    expect(a.store.me?.counters).toEqual({ survivors: 30, money: 4, food: 4 })
     expect(Object.keys(b.store.players).sort()).toEqual(['player-A', 'player-B'])
-    expect(a.store.isOnline('player-B')).toBe(true)
 
     a.store.adjust('survivors', -3)
     a.store.adjust('survivors', -1)
     expect(b.store.players['player-A']?.counters.survivors).toBe(30)
+
     await flush()
     expect(b.store.players['player-A']?.counters.survivors).toBe(26)
     expect(b.store.players['player-A']?.lastChange).toMatchObject({
@@ -78,34 +75,6 @@ describe('useRoomStore', () => {
     expect(c.store.players['player-A']?.counters.survivors).toBe(30)
     expect(c.store.players['player-B']?.counters.money).toBe(9)
     expect(c.store.isOnline('player-A')).toBe(true)
-    expect(c.store.isOnline('player-B')).toBe(true)
-  })
-
-  it('计数不会越过定义的上下限', async () => {
-    const a = createPlayer(hub, 'A')
-    await a.open()
-    a.store.adjust('money', -10)
-    expect(a.store.me?.counters.money).toBe(0)
-    a.store.adjust('food', 5000)
-    expect(a.store.me?.counters.food).toBe(999)
-    const version = a.store.me!.version
-    a.store.adjust('money', -1)
-    expect(a.store.me?.version).toBe(version)
-  })
-
-  it('撤销按操作逆序恢复，快捷行动作为一组撤销', async () => {
-    const a = createPlayer(hub, 'A')
-    await a.open()
-    a.store.adjust('survivors', -5)
-    a.store.applyQuickAction('mine')
-    expect(a.store.me?.counters).toMatchObject({ survivors: 25, money: 8 })
-    expect(a.store.canUndo).toBe(true)
-
-    a.store.undo()
-    expect(a.store.me?.counters).toMatchObject({ survivors: 25, money: 4 })
-    a.store.undo()
-    expect(a.store.me?.counters).toMatchObject({ survivors: 30, money: 4 })
-    expect(a.store.canUndo).toBe(false)
   })
 
   it('玩家离开后标记离线但保留其分数', async () => {
@@ -122,18 +91,6 @@ describe('useRoomStore', () => {
     expect(a.store.peerCount).toBe(0)
   })
 
-  it('忽略冒充本人的状态消息', async () => {
-    const a = createPlayer(hub, 'A')
-    await a.open()
-    const intruder = hub.createTransport('peer-X')
-    await intruder.join('moon-colony-bloodbath/K7PQ')
-    intruder.send({
-      type: 'state',
-      state: { ...a.store.me!, counters: { survivors: 0, money: 0, food: 0 }, version: 999 },
-    })
-    expect(a.store.me?.counters.survivors).toBe(30)
-  })
-
   it('刷新后从本地缓存恢复自己与他人的分数并延续版本号', async () => {
     const storage = new MemoryStorage()
     const a = createPlayer(hub, 'A', storage)
@@ -145,7 +102,6 @@ describe('useRoomStore', () => {
     await flush()
     const versionBefore = a.store.me!.version
     await a.store.close()
-    expect(storage.getItem(roomCacheKey(CODE))).not.toBeNull()
 
     const again = createPlayer(hub, 'A', storage)
     await again.open()
@@ -154,28 +110,21 @@ describe('useRoomStore', () => {
     expect(again.store.players['player-B']?.counters.food).toBe(6)
   })
 
-  it('排行按幸存者降序，幸存者归零视为出局', async () => {
+  it('他人只能查看不能修改：冒充本人的消息被忽略', async () => {
     const a = createPlayer(hub, 'A')
     const b = createPlayer(hub, 'B')
     await a.open()
     await b.open()
-    a.store.adjust('survivors', -30)
-    await flush()
-    expect(b.store.ranking.map((p) => p.playerId)).toEqual(['player-B', 'player-A'])
-    expect(b.store.isEliminated(b.store.players['player-A']!)).toBe(true)
-    expect(b.store.isEliminated(b.store.players['player-B']!)).toBe(false)
-    expect(a.store.orderedPlayers[0]?.playerId).toBe('player-A')
-  })
 
-  it('切换查看其他玩家时为只读视角', async () => {
-    const a = createPlayer(hub, 'A')
-    const b = createPlayer(hub, 'B')
-    await a.open()
-    await b.open()
     a.store.view('player-B')
-    expect(a.store.viewing?.playerId).toBe('player-B')
     expect(a.store.isViewingSelf).toBe(false)
-    a.store.view('player-nobody')
-    expect(a.store.viewingPlayerId).toBe('player-B')
+
+    const intruder = hub.createTransport('peer-X')
+    await intruder.join(`${moonColonyBloodbath.id}/${CODE}`)
+    intruder.send({
+      type: 'state',
+      state: { ...a.store.me!, counters: { survivors: 0, money: 0, food: 0 }, version: 999 },
+    })
+    expect(a.store.me?.counters.survivors).toBe(30)
   })
 })

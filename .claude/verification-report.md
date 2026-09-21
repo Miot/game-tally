@@ -95,3 +95,21 @@
 - 信令与状态同步链路在诊断中均正常，失败点是 WebRTC ICE 直连。
 - 本机 VPN 虚拟网卡（198.18.0.1）被 Chromium 选为唯一 host 候选，同机两个浏览器上下文之间不通；无 STUN 时 3/3 失败，有 STUN 时靠香港出口回环偶尔成功。
 - 该用例已加 `--disable-features=WebRtcHideLocalIpsWithMdns`，在无 VPN 环境下发现耗时约 5 秒；保持 `E2E_NETWORK=1` 手动开启。真机验收仍以两部手机实测为准。
+
+## 增量验证（2026-09-21 00:10）：首页精简
+| 项目 | 结果 |
+|------|------|
+| `pnpm test` | 33 个用例通过 |
+| `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` / `pnpm build` | 通过 |
+| `pnpm test:e2e` | 3 个通过（创建房间→弹层起名→记分→回到房间） |
+| 截图复核 | 首页：标题、回到房间卡片、房间码输入、封面入口、说明文字，顺序符合要求 |
+
+## 增量验证（2026-09-21 00:20）：精简测试与架构
+
+| 项目 | 结果 |
+|------|------|
+| `pnpm test` | 5 个用例通过，156ms |
+| `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` / `pnpm build` | 通过 |
+| `pnpm test:e2e` | 3 个通过（新增计数下限与禁用态断言） |
+
+测试规模：8 个文件 572 行 → 2 个文件 178 行。保留的两层各有不可替代的职责：Vitest 覆盖多端同步（端到端测不到），Playwright 覆盖真实页面上的完整一局。删除的是断言常量、测试替身自测与纯函数重复覆盖。
