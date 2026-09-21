@@ -13,11 +13,11 @@ declare module 'vue' {
   export interface GlobalComponents {
     ColonyBoard: typeof import('./components/ColonyBoard.vue')['default']
     ConnectionBadge: typeof import('./components/ConnectionBadge.vue')['default']
-    CoverBackdrop: typeof import('./components/CoverBackdrop.vue')['default']
     PlayerChips: typeof import('./components/PlayerChips.vue')['default']
     ProfileEditor: typeof import('./components/ProfileEditor.vue')['default']
     RankSheet: typeof import('./components/RankSheet.vue')['default']
     RobotAvatar: typeof import('./components/RobotAvatar.vue')['default']
+    RoomBackdrop: typeof import('./components/RoomBackdrop.vue')['default']
     RoomQrSheet: typeof import('./components/RoomQrSheet.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

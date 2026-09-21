@@ -55,10 +55,10 @@ const sharedActions = computed(() =>
 
 <template>
   <div class="flex flex-col gap-3">
-    <!-- 这一行浮在封面之上，因此文字装在半透明药丸里以保证可读 -->
+    <!-- 这一行浮在房间背景之上，文字装在药丸里以保证可读 -->
     <div class="flex items-center gap-2 text-xs">
       <div
-        class="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-surface/85 px-2.5 py-1.5 text-ink-2 shadow-sm backdrop-blur-sm"
+        class="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-surface px-2.5 py-1.5 text-ink-2 shadow-sm"
       >
         <span class="h-5 w-5 shrink-0">
           <RobotAvatar :index="state.avatar" :offline="!online" />

@@ -134,3 +134,11 @@
 | 视觉核对 | 封面满宽完整展示于上半屏，卡片与按钮维持白色，浮在封面上的文字均有半透明底 |
 
 架构变化：删除 components/backdrops 目录与 GameDefinition.backdrop 字段，背景统一由封面生成。
+
+## 增量验证（2026-09-21 02:00）：黑色模糊光晕背景
+
+| 项目 | 结果 |
+|------|------|
+| `pnpm test` / `pnpm test:e2e` | 5 个与 3 个用例通过 |
+| `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` / `pnpm build` | 通过 |
+| 视觉核对 | 黑底上白色卡片与药丸对比清晰，顶部所有交互文字可读 |

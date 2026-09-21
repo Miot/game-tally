@@ -12,7 +12,7 @@ import { useRouter } from 'vue-router'
 
 import ColonyBoard from '@/components/ColonyBoard.vue'
 import ConnectionBadge from '@/components/ConnectionBadge.vue'
-import CoverBackdrop from '@/components/CoverBackdrop.vue'
+import RoomBackdrop from '@/components/RoomBackdrop.vue'
 import PlayerChips from '@/components/PlayerChips.vue'
 import ProfileEditor from '@/components/ProfileEditor.vue'
 import RankSheet from '@/components/RankSheet.vue'
@@ -192,7 +192,7 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
 
 <template>
   <main class="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-3 px-4 pt-3 pb-8">
-    <CoverBackdrop :cover="game.cover" />
+    <RoomBackdrop />
     <header class="flex items-center gap-2">
       <button
         type="button"
