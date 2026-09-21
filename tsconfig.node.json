@@ -1,0 +1,12 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "include": ["vite.config.*", "vitest.config.*", "playwright.config.*", "eslint.config.*", "pwa-assets.config.*", "tests/e2e/**/*"],
+  "compilerOptions": {
+    "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node"],
+    "lib": ["ES2023", "DOM"]
+  }
+}
