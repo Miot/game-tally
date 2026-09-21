@@ -12,9 +12,13 @@ defineProps<{ cover: CoverImage }>()
 <template>
   <!-- 高度由封面比例决定（约半屏），保证整张封面满宽完整展示、左右不留白 -->
   <div class="pointer-events-none fixed inset-x-0 top-0 -z-10 overflow-hidden" aria-hidden="true">
-    <img :src="cover.src2x" alt="" class="block w-full" decoding="async" />
+    <!--
+      高斯模糊柔化封面细节，让浮在上面的房间码与昵称一行保持可读。
+      scale 只放大绘制、不改变布局高度，用于裁掉模糊在图片边缘留下的透明带。
+    -->
+    <img :src="cover.src2x" alt="" class="block w-full scale-105 blur-md" decoding="async" />
     <div
-      class="absolute inset-0 bg-linear-to-b from-canvas/40 via-canvas/15 via-55% to-canvas"
+      class="absolute inset-0 bg-linear-to-b from-canvas/55 via-canvas/28 via-55% to-canvas"
     ></div>
   </div>
 </template>
