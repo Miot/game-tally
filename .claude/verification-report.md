@@ -150,3 +150,15 @@
 | `pnpm test` / `pnpm test:e2e` | 5 个与 3 个用例通过 |
 | `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` / `pnpm build` | 通过 |
 | 视觉核对 | 切换条三个玩家（选中/未选中/离线）在黑底上均清晰；减少、增加、静止三帧动画表现正确且无残留 |
+
+## 发布验证（2026-09-21 08:25）：v1.0.0 上线
+
+| 项目 | 结果 |
+|------|------|
+| 本地门禁 | Vitest 5 个、Playwright 3 个、vue-tsc、ESLint、Prettier、build 全部通过 |
+| 部署工作流 | build 24s、deploy 15s，均成功，无弃用警告 |
+| 线上资源 | 首页、入口脚本、manifest.webmanifest、sw.js、favicon.svg 全部 200 |
+| 线上流程 | Playwright 访问 https://miot.github.io/game-tally/ 跑通建房、起名、记分，封面加载成功，控制台无错误 |
+| 版本 | v1.0.0 已打标签并推送 |
+
+遗留：仓库为部署需要已由私有改为公开；真机间 WebRTC 直连仍需两部手机实测。
