@@ -160,3 +160,10 @@
   2. 读数弹跳 —— 增加上扬、减少下沉，420ms，方向本身即反馈；
   3. 增量气泡 —— 读数右侧浮出 +N / −N 并淡出，700ms。
 - 三者先清空再在下一帧赋值，连点时动画会重新播放；720ms 后统一清理，卡片完全恢复原状。
+
+## 2026-09-21 08:20 发布与部署
+- 推送 12 个提交到 github.com/Miot/game-tally。
+- 首次部署受阻：免费套餐下私有仓库不支持 Pages（创建 Pages 返回 422），且 Actions 因账单问题 job 未启动。经用户确认后仓库已改为公开。
+- 启用 Pages（build_type=workflow），手动触发部署：build 26s、deploy 8s，均成功。
+- 线上校验：首页与入口脚本、manifest.webmanifest、sw.js、favicon.svg 全部 200；Playwright 访问线上地址跑通建房、起名、记分（-5 后为 25），封面加载成功，控制台无错误。
+- 顺带消除工作流的 Node 20 弃用警告：checkout v4→v7、pnpm/action-setup v4→v6、setup-node v4→v7、configure-pages v5→v6、upload-pages-artifact v3→v5、deploy-pages v4→v5。
