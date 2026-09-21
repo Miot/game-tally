@@ -10,6 +10,7 @@ import { showConfirmDialog, showToast } from 'vant'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { backdrops } from '@/components/backdrops'
 import ColonyBoard from '@/components/ColonyBoard.vue'
 import ConnectionBadge from '@/components/ConnectionBadge.vue'
 import PlayerChips from '@/components/PlayerChips.vue'
@@ -28,6 +29,7 @@ const router = useRouter()
 const settings = useSettingsStore()
 const room = useRoomStore()
 const game = defaultGame
+const Backdrop = backdrops[game.backdrop]
 
 const code = computed(() => normalizeRoomCode(props.code))
 const shareUrl = computed(() => `${location.origin}${location.pathname}#/r/${code.value}`)
@@ -144,6 +146,7 @@ async function copyCode(): Promise<void> {
 
 const menuActions = [
   { name: '排行榜', id: 'rank' },
+  { name: '重新连接', id: 'reconnect' },
   { name: '重置我的计数', id: 'reset', color: '#f5a623' },
   { name: '设置与网络诊断', id: 'settings' },
   { name: '离开房间', id: 'leave', color: '#ef4b53' },
@@ -154,6 +157,11 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
   switch (action.id) {
     case 'rank':
       showRank.value = true
+      break
+    case 'reconnect':
+      // 重新入房会立即向中继重新公告，用于公共中继丢弃首个公告时加速对等端发现
+      await enterRoom()
+      showToast('已重新连接中继')
       break
     case 'reset':
       try {
@@ -181,6 +189,7 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
 
 <template>
   <main class="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-3 px-4 pt-3 pb-24">
+    <Backdrop />
     <header class="flex items-center gap-2">
       <button
         type="button"

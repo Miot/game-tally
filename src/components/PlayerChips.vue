@@ -42,10 +42,7 @@ const emit = defineEmits<{ select: [playerId: string] }>()
       <span class="max-w-20 truncate text-sm">
         {{ player.playerId === myId ? '我' : player.name }}
       </span>
-      <span
-        class="readout text-sm"
-        :class="isEliminated(player) ? 'text-alert' : 'text-token-person'"
-      >
+      <span class="readout text-sm" :class="isEliminated(player) ? 'text-alert' : 'text-ink'">
         {{ player.counters[heroCounterId] ?? 0 }}
       </span>
     </button>

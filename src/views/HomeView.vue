@@ -5,7 +5,6 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ProfileEditor from '@/components/ProfileEditor.vue'
-import TokenIcon from '@/components/TokenIcon.vue'
 import { defaultGame } from '@/games'
 import { LAST_ROOM_KEY } from '@/stores/room'
 import { useSettingsStore } from '@/stores/settings'
@@ -14,6 +13,7 @@ import { generateRoomCode, isValidRoomCode, normalizeRoomCode } from '@/utils/ro
 const router = useRouter()
 const settings = useSettingsStore()
 const game = defaultGame
+const heroCounter = game.counters.find((c) => c.hero) ?? game.counters[0]!
 
 const joinCode = ref('')
 const lastRoom = useStorage<string | null>(LAST_ROOM_KEY, null)
@@ -94,9 +94,7 @@ function resumeRoom(): void {
           @error="coverFailed = true"
         />
         <div v-else class="flex aspect-square w-full items-center justify-center bg-surface-2">
-          <span class="h-28 w-28 text-token-person">
-            <TokenIcon kind="person" />
-          </span>
+          <img :src="heroCounter.icon" :alt="heroCounter.name" class="h-28 w-28 object-contain" />
         </div>
         <div
           class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent px-4 pt-12 pb-4 text-white"

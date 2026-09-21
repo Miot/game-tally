@@ -5,14 +5,17 @@
 
 export type CounterId = string
 
-/** token 图形种类，对应 TokenIcon 组件的绘制分支 */
-export type TokenKind = 'person' | 'coin' | 'food'
+/** 房间背景风格，对应 components/backdrops 注册表 */
+export type BackdropId = 'moon'
 
 export interface CounterDefinition {
   id: CounterId
   /** 中文显示名 */
   name: string
-  token: TokenKind
+  /** token 图片地址：从官方规则书提取的真实 token 图案 */
+  icon: string
+  /** 读数颜色（十六进制），需在白底上可读 */
+  color: string
   /** 每位玩家开局的数量 */
   initial: number
   min: number
@@ -59,6 +62,7 @@ export interface GameDefinition {
   /** 一句话说明胜负判定，展示在首页卡片 */
   winCondition: string
   cover: CoverImage
+  backdrop: BackdropId
   counters: readonly CounterDefinition[]
   quickActions: readonly QuickActionDefinition[]
   ranking: { counterId: CounterId; order: 'desc' | 'asc' }

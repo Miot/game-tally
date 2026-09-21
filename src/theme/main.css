@@ -16,9 +16,6 @@
   --color-amber-deep: #b45309;
   --color-mint: #10b981;
   --color-mint-deep: #047857;
-  --color-token-person: #2563eb;
-  --color-token-coin: #d97706;
-  --color-token-food: #059669;
 
   --font-display: 'Orbitron Variable', ui-monospace, monospace;
   --font-sans:
@@ -38,7 +35,6 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-tap-highlight-color: transparent;
@@ -46,8 +42,12 @@ body {
   overscroll-behavior-y: none;
 }
 
-/* 顶部一抹青蓝光晕 + 细网格，营造科技感而不抢内容 */
-body {
+/*
+ * 装饰背景放在 html 上，使其绘制在画布层，
+ * 这样房间页固定定位、负 z-index 的游戏背景能覆盖网格又位于内容之下。
+ */
+html {
+  background-color: var(--color-canvas);
   background-image:
     radial-gradient(900px 420px at 50% -160px, rgba(14, 165, 233, 0.16), transparent 65%),
     linear-gradient(to right, rgba(11, 18, 32, 0.035) 1px, transparent 1px),

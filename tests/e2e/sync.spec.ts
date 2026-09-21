@@ -14,7 +14,9 @@ test.describe('真实网络同步', () => {
   test.skip(!process.env.E2E_NETWORK, '需要 E2E_NETWORK=1 且能访问公共 MQTT 中继')
 
   test('两台设备经公共中继入房，互相看到分数且只读', async ({ browser, baseURL }) => {
-    test.setTimeout(120_000)
+    // 公共中继偶发丢公告时 Trystero 每 60 秒重新公告，等待需覆盖一轮
+    test.setTimeout(180_000)
+    const DISCOVERY_TIMEOUT_MS = 90_000
     const code = randomCode()
     const contextA = await browser.newContext(devices['Pixel 7'])
     const contextB = await browser.newContext(devices['Pixel 7'])
@@ -28,8 +30,14 @@ test.describe('真实网络同步', () => {
     await b.getByPlaceholder('你的昵称').fill('月尘')
     await b.getByTestId('confirm-profile').click()
 
-    await expect(a.getByTestId('connection-badge')).toHaveText(/1 人在线/, { timeout: 60_000 })
-    await expect(b.getByTestId('connection-badge')).toHaveText(/1 人在线/, { timeout: 60_000 })
+    const startedAt = Date.now()
+    await expect(a.getByTestId('connection-badge')).toHaveText(/1 人在线/, {
+      timeout: DISCOVERY_TIMEOUT_MS,
+    })
+    await expect(b.getByTestId('connection-badge')).toHaveText(/1 人在线/, {
+      timeout: DISCOVERY_TIMEOUT_MS,
+    })
+    console.log(`对等端发现耗时 ${((Date.now() - startedAt) / 1000).toFixed(1)} 秒`)
 
     await a.getByTestId('counter-survivors-dec-5').click()
     await a.getByTestId('quick-mine').click()

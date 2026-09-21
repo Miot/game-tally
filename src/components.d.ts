@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ColonyBoard: typeof import('./components/ColonyBoard.vue')['default']
     ConnectionBadge: typeof import('./components/ConnectionBadge.vue')['default']
+    MoonBackdrop: typeof import('./components/backdrops/MoonBackdrop.vue')['default']
     PlayerChips: typeof import('./components/PlayerChips.vue')['default']
     ProfileEditor: typeof import('./components/ProfileEditor.vue')['default']
     RankSheet: typeof import('./components/RankSheet.vue')['default']
@@ -21,7 +22,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TokenCounter: typeof import('./components/TokenCounter.vue')['default']
-    TokenIcon: typeof import('./components/TokenIcon.vue')['default']
     VanActionSheet: typeof import('vant/es')['ActionSheet']
     VanButton: typeof import('vant/es')['Button']
     VanCell: typeof import('vant/es')['Cell']

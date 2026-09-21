@@ -88,3 +88,19 @@
 - 封面：经 api.geekdo.com/api/images/8638247 取得各尺寸变体，选 itempage（700）与 large（1024，2x）、square200（缩略）；curl 验证带 localhost / github.io Referer 均 200，可热链。
 - 令牌迁移：space/dust 深色令牌全部替换为 canvas/surface/ink/accent 语义令牌，文字用 accent-deep / amber-deep / mint-deep 保证白底对比度。
 - 验证：vitest 32 通过；vue-tsc、eslint、prettier 通过；Playwright 3 + 真实网络同步 1 通过；截图五页复核，封面 2x 变体在高 DPR 设备正确加载。
+
+## 2026-09-20 23:20 房间页重排 + 规则书 token 图标 + 月面背景
+- 规则书：下载 riograndegames.com/wp-content/uploads/2024/07/MCB.pdf（12 页，无文字层），用 PyMuPDF 导出第 2 页 Contents 中的 1 单位 token（xref 18 人口 43px、16 钱 52×35、14 食物 50px），Lanczos 放大 3 倍存入 src/assets/games/moon-colony-bloodbath/，自绘 TokenIcon.vue 删除。
+- 游戏定义新增 counters[].icon / color 与 backdrop 字段；快捷行动改为按影响的计数器归属：单计数器行动渲染在该计数器标题行右侧，多计数器行动渲染在顶部一行。
+- 头部弱化为一行小字（头像 24px、昵称、状态、最近变动），撤销按钮移到该行右侧。
+- 背景：components/backdrops 注册表按 backdrop 标识渲染；MoonBackdrop 为固定定位负 z-index 的 SVG。修正：装饰网格从 body 移到 html，否则 body 背景层级高于负 z-index 元素。
+- 真实网络用例首次失败（4/4 中继已连但 60 秒未发现对等端），与截图脚本并发占用公共中继有关，单独重跑通过。
+
+## 2026-09-20 23:50 真实网络用例波动排查
+- 现象：双设备用例时过时不过；诊断脚本显示信令正常（双方 4/4 中继已连、互相发现），失败在 WebRTC 直连阶段，Trystero 报 could not connect to peer。
+- 排除 1：把等待放宽到覆盖一轮 60 秒重公告仍失败 → 非丢公告。
+- 排除 2：Playwright 加 --disable-features=WebRtcHideLocalIpsWithMdns 后成功率提高、发现耗时 5 秒，但仍偶发失败。
+- 排除 3：不配置 STUN 三次全失败 → 本机候选本身不通。
+- 根因：本机开着 VPN（utun4 198.18.0.1，默认路由仍是 en0 172.16.x），Chromium 只生成 198.18.0.1 的 host 候选，同机两个上下文之间 UDP 不通；有 STUN 时靠香港出口的 srflx 回环偶尔成功。
+- 结论：应用实现无问题；该用例在无 VPN 的机器或真机上才稳定。保留 Playwright 的 mDNS 参数（对无 VPN 环境正确）、保留用例为 E2E_NETWORK 手动开启，并在 README 与验证报告注明。
+- 顺带新增房间菜单「重新连接」：重新入房立即重新公告，用于公共中继丢公告时加速发现。

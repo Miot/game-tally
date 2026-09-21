@@ -1,9 +1,14 @@
+import foodIcon from '@/assets/games/moon-colony-bloodbath/food.png'
+import moneyIcon from '@/assets/games/moon-colony-bloodbath/money.png'
+import personIcon from '@/assets/games/moon-colony-bloodbath/person.png'
+
 import type { GameDefinition } from './types'
 
 /**
  * 《月球殖民地》Moon Colony Bloodbath
  * 资料来源：BGG #425549、Rio Grande Games 官方页、RulesPal 规则书（2026-09-20 查阅）。
  * 封面图直接引用 BGG 图片 CDN（pic8638247），不落库到仓库。
+ * token 图标取自 Rio Grande Games 官方规则书 MCB.pdf 第 2 页「Contents」中的 1 单位 token。
  * 胜负只看幸存者数量，因此幸存者为主计数器；钱与食物是游戏中最频繁增减的两种 token。
  */
 export const moonColonyBloodbath: GameDefinition = {
@@ -29,7 +34,8 @@ export const moonColonyBloodbath: GameDefinition = {
     {
       id: 'survivors',
       name: '幸存者',
-      token: 'person',
+      icon: personIcon,
+      color: '#1d4ed8',
       initial: 30,
       min: 0,
       max: 999,
@@ -39,7 +45,8 @@ export const moonColonyBloodbath: GameDefinition = {
     {
       id: 'money',
       name: '钱',
-      token: 'coin',
+      icon: moneyIcon,
+      color: '#111827',
       initial: 4,
       min: 0,
       max: 999,
@@ -48,7 +55,8 @@ export const moonColonyBloodbath: GameDefinition = {
     {
       id: 'food',
       name: '食物',
-      token: 'food',
+      icon: foodIcon,
+      color: '#15803d',
       initial: 4,
       min: 0,
       max: 999,
@@ -56,9 +64,10 @@ export const moonColonyBloodbath: GameDefinition = {
     },
   ],
   quickActions: [
-    { id: 'mine', label: '采矿 +4 钱', delta: { money: 4 } },
-    { id: 'farm', label: '耕作 +4 食物', delta: { food: 4 } },
+    { id: 'mine', label: '采矿 +4', delta: { money: 4 } },
+    { id: 'farm', label: '耕作 +4', delta: { food: 4 } },
   ],
+  backdrop: 'moon',
   ranking: { counterId: 'survivors', order: 'desc' },
   elimination: { counterId: 'survivors', atOrBelow: 0, label: '殖民地失败' },
 }

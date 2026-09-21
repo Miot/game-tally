@@ -2,33 +2,27 @@
 import { useTimeoutFn } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 
-import type { CounterDefinition } from '@/games'
-
-import TokenIcon from './TokenIcon.vue'
+import type { CounterDefinition, QuickActionDefinition } from '@/games'
 
 const props = defineProps<{
   definition: CounterDefinition
   value: number
-  /** 只读视角不渲染加减按钮 */
+  /** 只读视角不渲染加减与快捷按钮 */
   editable: boolean
+  /** 只作用于本计数器的快捷行动，渲染在标题行右侧 */
+  actions?: QuickActionDefinition[]
 }>()
 
-const emit = defineEmits<{ adjust: [delta: number] }>()
+const emit = defineEmits<{ adjust: [delta: number]; quick: [actionId: string] }>()
 
-const COLOR_CLASS: Record<CounterDefinition['token'], string> = {
-  person: 'text-token-person',
-  coin: 'text-token-coin',
-  food: 'text-token-food',
-}
-
-const colorClass = computed(() => COLOR_CLASS[props.definition.token])
 const isHero = computed(() => props.definition.hero === true)
 const mainStep = computed(() => props.definition.steps[0] ?? 1)
 const subSteps = computed(() => props.definition.steps.slice(1))
 const canDecrease = computed(() => props.value > props.definition.min)
 const canIncrease = computed(() => props.value < props.definition.max)
+const quickActions = computed(() => props.actions ?? [])
 
-/* 数值变化时闪烁：减少为红色警报，增加为青色 */
+/* 数值变化时闪烁：减少为红色警报，增加为青蓝 */
 const flashClass = ref('')
 const { start: clearFlashLater } = useTimeoutFn(
   () => {
@@ -52,20 +46,37 @@ watch(
 <template>
   <section class="panel p-4" :class="flashClass" :data-counter="definition.id">
     <header class="flex items-center gap-3">
-      <div class="shrink-0" :class="[colorClass, isHero ? 'h-12 w-12' : 'h-9 w-9']">
-        <TokenIcon :kind="definition.token" />
-      </div>
+      <img
+        :src="definition.icon"
+        :alt="definition.name"
+        class="shrink-0 object-contain drop-shadow-sm"
+        :class="isHero ? 'h-12 w-12' : 'h-10 w-10'"
+        decoding="async"
+      />
       <h3 class="font-display text-xs tracking-[0.3em] text-ink-2 uppercase">
         {{ definition.name }}
       </h3>
-      <span v-if="isHero" class="ml-auto font-display text-[10px] tracking-widest text-ink-3">
+      <div v-if="editable && quickActions.length" class="ml-auto flex items-center gap-2">
+        <button
+          v-for="action in quickActions"
+          :key="action.id"
+          type="button"
+          class="tap min-h-10 rounded-full border border-amber-deep/40 bg-amber/10 px-3 font-display text-xs tracking-wider text-amber-deep"
+          :data-testid="`quick-${action.id}`"
+          @click="emit('quick', action.id)"
+        >
+          {{ action.label }}
+        </button>
+      </div>
+      <span v-else-if="isHero" class="ml-auto font-display text-[10px] tracking-widest text-ink-3">
         排行依据
       </span>
     </header>
 
     <p
       class="readout text-center"
-      :class="[colorClass, isHero ? 'my-3 text-7xl' : 'my-2 text-5xl']"
+      :class="isHero ? 'my-3 text-7xl' : 'my-2 text-5xl'"
+      :style="{ color: definition.color }"
       :data-testid="`counter-${definition.id}-value`"
       :aria-label="`${definition.name} ${value}`"
     >

@@ -3,7 +3,6 @@ import type { GameDefinition } from '@/games'
 import type { PlayerState } from '@/sync/messages'
 
 import RobotAvatar from './RobotAvatar.vue'
-import TokenIcon from './TokenIcon.vue'
 
 defineProps<{
   game: GameDefinition
@@ -54,21 +53,13 @@ const show = defineModel<boolean>('show', { required: true })
               v-for="counter in game.counters"
               :key="counter.id"
               class="flex items-center gap-1"
-              :class="counter.hero ? 'text-token-person' : 'text-ink-2'"
             >
+              <img :src="counter.icon" :alt="counter.name" class="h-5 w-5 object-contain" />
               <span
-                class="h-4 w-4"
-                :class="
-                  counter.token === 'coin'
-                    ? 'text-token-coin'
-                    : counter.token === 'food'
-                      ? 'text-token-food'
-                      : ''
-                "
+                class="readout"
+                :class="counter.hero ? 'text-xl' : 'text-sm'"
+                :style="{ color: counter.hero ? counter.color : undefined }"
               >
-                <TokenIcon :kind="counter.token" />
-              </span>
-              <span class="readout" :class="counter.hero ? 'text-xl' : 'text-sm'">
                 {{ player.counters[counter.id] ?? 0 }}
               </span>
             </span>

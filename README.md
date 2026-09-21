@@ -25,7 +25,8 @@ Vue 3 · TypeScript · Vite · Pinia · Vue Router（hash 模式）· Vant 4 · 
 - 默认信令策略为 MQTT，中继列表包含 `broker-cn.emqx.io`；分数数据不经过中继，只用于让手机找到彼此。
 - 默认 STUN 使用大陆可达节点（bilibili、cdnbye），境外节点作为补充。
 - 同一 Wi-Fi 下直连最稳；跨运营商蜂窝网络若无法直连，可在「设置」里填写 TURN 中转服务器。
-- 「设置 → 连接诊断」可查看各中继连接状态与对等端数量。
+- 「设置 → 连接诊断」可查看各中继连接状态与对等端数量；房间菜单「重新连接」会重新入房并立即向中继公告。
+- token 图标取自 Rio Grande Games 官方规则书（MCB.pdf）中的组件图；房间背景按游戏定制，《月球殖民地》为月面风格。
 
 ## 本地开发
 
@@ -34,7 +35,7 @@ pnpm install
 pnpm dev            # 本地开发服务器
 pnpm test           # Vitest 单元与集成测试
 pnpm test:e2e       # Playwright 端到端（首次需 pnpm exec playwright install chromium）
-E2E_NETWORK=1 pnpm test:e2e tests/e2e/sync.spec.ts   # 双设备经公共 MQTT 中继真实同步（需联网）
+E2E_NETWORK=1 pnpm test:e2e tests/e2e/sync.spec.ts   # 双设备经公共 MQTT 中继真实同步（需联网；本机开着 VPN 时 ICE 直连会不稳定）
 pnpm lint:check     # ESLint
 pnpm format:check   # Prettier
 pnpm build          # 类型检查 + 构建到 dist/

@@ -7,6 +7,7 @@ import TokenCounter from './TokenCounter.vue'
 
 const survivors = moonColonyBloodbath.counters[0]!
 const money = moonColonyBloodbath.counters[1]!
+const mine = moonColonyBloodbath.quickActions[0]!
 
 describe('TokenCounter', () => {
   it('可编辑时渲染主副加减按钮并发出对应增量', async () => {
@@ -14,17 +15,24 @@ describe('TokenCounter', () => {
       props: { definition: survivors, value: 30, editable: true },
     })
     expect(wrapper.get('[data-testid="counter-survivors-value"]').text()).toBe('30')
+    expect(wrapper.get('img').attributes('src')).toBe(survivors.icon)
     await wrapper.get('[data-testid="counter-survivors-dec-1"]').trigger('click')
     await wrapper.get('[data-testid="counter-survivors-inc-5"]').trigger('click')
     expect(wrapper.emitted('adjust')).toEqual([[-1], [5]])
   })
 
-  it('只读时不渲染任何按钮', () => {
-    const wrapper = mount(TokenCounter, {
-      props: { definition: money, value: 4, editable: false },
+  it('快捷行动渲染在标题行并发出行动 id，只读时不渲染', async () => {
+    const editable = mount(TokenCounter, {
+      props: { definition: money, value: 4, editable: true, actions: [mine] },
     })
-    expect(wrapper.findAll('button')).toHaveLength(0)
-    expect(wrapper.get('[data-testid="counter-money-value"]').text()).toBe('4')
+    await editable.get('[data-testid="quick-mine"]').trigger('click')
+    expect(editable.emitted('quick')).toEqual([['mine']])
+
+    const readonly = mount(TokenCounter, {
+      props: { definition: money, value: 4, editable: false, actions: [mine] },
+    })
+    expect(readonly.findAll('button')).toHaveLength(0)
+    expect(readonly.get('[data-testid="counter-money-value"]').text()).toBe('4')
   })
 
   it('到达下限时禁用减少按钮，到达上限时禁用增加按钮', () => {

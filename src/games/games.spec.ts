@@ -20,6 +20,14 @@ describe('游戏定义注册表', () => {
     expect(initialCounters(moonColonyBloodbath)).toEqual({ survivors: 30, money: 4, food: 4 })
   })
 
+  it('三项计数器都带规则书 token 图标与读数颜色，背景为月面', () => {
+    for (const counter of moonColonyBloodbath.counters) {
+      expect(counter.icon).toMatch(/\.png$/)
+      expect(counter.color).toMatch(/^#[0-9a-f]{6}$/i)
+    }
+    expect(moonColonyBloodbath.backdrop).toBe('moon')
+  })
+
   it('封面图引用 BGG 图片 CDN 的 https 地址', () => {
     for (const url of [
       moonColonyBloodbath.cover.src,
