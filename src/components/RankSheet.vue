@@ -19,8 +19,8 @@ const show = defineModel<boolean>('show', { required: true })
 <template>
   <van-popup v-model:show="show" position="bottom" round closeable safe-area-inset-bottom>
     <div class="px-4 pt-4 pb-6">
-      <h2 class="font-display text-sm tracking-[0.3em] text-dust-500 uppercase">排行榜</h2>
-      <p class="mt-1 text-xs text-dust-700">{{ game.winCondition }}</p>
+      <h2 class="font-display text-sm tracking-[0.3em] text-ink-2 uppercase">排行榜</h2>
+      <p class="mt-1 text-xs text-ink-3">{{ game.winCondition }}</p>
       <ol class="mt-4 flex flex-col gap-2">
         <li
           v-for="(player, index) in ranking"
@@ -30,7 +30,7 @@ const show = defineModel<boolean>('show', { required: true })
         >
           <span
             class="readout w-6 text-center text-lg"
-            :class="index === 0 ? 'text-amber' : 'text-dust-500'"
+            :class="index === 0 ? 'text-amber-deep' : 'text-ink-2'"
           >
             {{ index + 1 }}
           </span>
@@ -40,12 +40,12 @@ const show = defineModel<boolean>('show', { required: true })
           <span class="min-w-0 flex-1">
             <span class="block truncate text-sm font-medium">
               {{ player.name
-              }}<span v-if="player.playerId === myId" class="text-dust-500">（我）</span>
+              }}<span v-if="player.playerId === myId" class="text-ink-2">（我）</span>
             </span>
             <span v-if="isEliminated(player)" class="text-xs text-alert">
               {{ game.elimination.label }}
             </span>
-            <span v-else class="text-xs text-dust-500">{{
+            <span v-else class="text-xs text-ink-2">{{
               isOnline(player.playerId) ? '在线' : '离线'
             }}</span>
           </span>
@@ -54,7 +54,7 @@ const show = defineModel<boolean>('show', { required: true })
               v-for="counter in game.counters"
               :key="counter.id"
               class="flex items-center gap-1"
-              :class="counter.hero ? 'text-token-person' : 'text-dust-500'"
+              :class="counter.hero ? 'text-token-person' : 'text-ink-2'"
             >
               <span
                 class="h-4 w-4"

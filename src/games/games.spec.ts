@@ -19,6 +19,16 @@ describe('游戏定义注册表', () => {
     expect(moonColonyBloodbath.counters.find((c) => c.hero)?.id).toBe('survivors')
     expect(initialCounters(moonColonyBloodbath)).toEqual({ survivors: 30, money: 4, food: 4 })
   })
+
+  it('封面图引用 BGG 图片 CDN 的 https 地址', () => {
+    for (const url of [
+      moonColonyBloodbath.cover.src,
+      moonColonyBloodbath.cover.src2x,
+      moonColonyBloodbath.cover.thumb,
+    ]) {
+      expect(url).toMatch(/^https:\/\/cf\.geekdo-images\.com\/.+pic8638247\.jpg$/)
+    }
+  })
 })
 
 describe('assertGameDefinition', () => {

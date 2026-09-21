@@ -19,7 +19,7 @@ const NAME_MAX_LENGTH = 12
         type="button"
         role="radio"
         class="tap h-10 w-10 rounded-full border-2 p-0.5"
-        :class="index === avatar ? 'border-cyan shadow-glow-cyan' : 'border-transparent'"
+        :class="index === avatar ? 'border-accent shadow-glow-accent' : 'border-transparent'"
         :aria-checked="index === avatar"
         :aria-label="`${palette.name}色机器人`"
         @click="avatar = index"

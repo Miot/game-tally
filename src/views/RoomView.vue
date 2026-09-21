@@ -184,7 +184,7 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
     <header class="flex items-center gap-2">
       <button
         type="button"
-        class="tap flex h-10 w-10 items-center justify-center rounded-full border border-line bg-space-800 text-dust-300"
+        class="tap flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-ink-2"
         aria-label="返回首页"
         @click="router.push({ name: 'home' })"
       >
@@ -192,7 +192,7 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
       </button>
       <button
         type="button"
-        class="tap readout flex-1 rounded-full border border-line bg-space-800 py-2 text-center text-xl tracking-[0.3em] text-cyan"
+        class="tap readout flex-1 rounded-full border border-line bg-surface py-2 text-center text-xl tracking-[0.3em] text-accent-deep"
         data-testid="room-code"
         aria-label="复制房间码"
         @click="copyCode"
@@ -202,7 +202,7 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
       <ConnectionBadge :status="room.status" :peer-count="room.peerCount" :relays="room.relays" />
       <button
         type="button"
-        class="tap flex h-10 w-10 items-center justify-center rounded-full border border-line bg-space-800 text-dust-300"
+        class="tap flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-ink-2"
         aria-label="更多"
         @click="showMenu = true"
       >
@@ -223,7 +223,7 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
 
     <div
       v-if="room.viewing && !room.isViewingSelf"
-      class="flex items-center justify-between rounded-xl border border-amber/40 bg-amber/10 px-3 py-2 text-xs text-amber"
+      class="flex items-center justify-between rounded-xl border border-amber/40 bg-amber/10 px-3 py-2 text-xs text-amber-deep"
       data-testid="readonly-banner"
     >
       <span>只读 · 正在查看 {{ room.viewing.name }} 的殖民地</span>
@@ -256,13 +256,13 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
       @undo="room.undo"
     />
 
-    <div v-else-if="!showProfile" class="panel flex flex-col items-center gap-2 p-8 text-dust-500">
+    <div v-else-if="!showProfile" class="panel flex flex-col items-center gap-2 p-8 text-ink-2">
       <span class="h-3 w-3 rounded-full bg-amber pulse" />
       <p class="text-sm">正在进入房间…</p>
     </div>
 
     <nav
-      class="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-space-900/90 backdrop-blur"
+      class="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-surface/90 backdrop-blur"
       style="padding-bottom: env(safe-area-inset-bottom)"
     >
       <div class="mx-auto flex max-w-md gap-2 px-4 py-2">
@@ -296,10 +296,10 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
       safe-area-inset-bottom
     >
       <div class="px-4 pt-5 pb-6">
-        <h2 class="font-display text-sm tracking-[0.3em] text-dust-500 uppercase">
+        <h2 class="font-display text-sm tracking-[0.3em] text-ink-2 uppercase">
           进入房间 {{ code }}
         </h2>
-        <p class="mt-1 mb-4 text-xs text-dust-700">先选一个机器人并起名，同桌才认得出你。</p>
+        <p class="mt-1 mb-4 text-xs text-ink-3">先选一个机器人并起名，同桌才认得出你。</p>
         <ProfileEditor
           v-model:name="settings.profile.name"
           v-model:avatar="settings.profile.avatar"

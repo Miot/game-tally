@@ -82,3 +82,9 @@
 ### 验证记录
 - Vitest 6 个文件 31 个用例通过；vue-tsc、eslint、prettier 通过；vite build 通过；Playwright 3 个用例通过
 - 截图核对：首页、房间页、排行榜、邀请、设置五张手机视图，主题变量作用域修正后配色一致
+
+## 2026-09-20 22:40 主题改浅色 + BGG 封面入口
+- 用户决策变更：整体 UI 白色为主的科技感；首页直接用 BGG 封面图作为游戏入口（覆盖此前 D8）。
+- 封面：经 api.geekdo.com/api/images/8638247 取得各尺寸变体，选 itempage（700）与 large（1024，2x）、square200（缩略）；curl 验证带 localhost / github.io Referer 均 200，可热链。
+- 令牌迁移：space/dust 深色令牌全部替换为 canvas/surface/ink/accent 语义令牌，文字用 accent-deep / amber-deep / mint-deep 保证白底对比度。
+- 验证：vitest 32 通过；vue-tsc、eslint、prettier 通过；Playwright 3 + 真实网络同步 1 通过；截图五页复核，封面 2x 变体在高 DPR 设备正确加载。

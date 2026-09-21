@@ -27,20 +27,20 @@ const text = computed(() => {
 const dotClass = computed(() => {
   switch (props.status) {
     case 'connected':
-      return props.peerCount > 0 ? 'bg-mint' : 'bg-cyan'
+      return props.peerCount > 0 ? 'bg-mint' : 'bg-accent'
     case 'connecting':
       return 'bg-amber pulse'
     case 'error':
       return 'bg-alert'
     default:
-      return 'bg-dust-700'
+      return 'bg-ink-3'
   }
 })
 </script>
 
 <template>
   <span
-    class="inline-flex items-center gap-1.5 rounded-full border border-line bg-space-800 px-2.5 py-1 text-xs text-dust-300"
+    class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 py-1 text-xs text-ink-2"
     :title="`中继 ${openRelays}/${relays.length} 已连接`"
     data-testid="connection-badge"
   >

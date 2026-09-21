@@ -1,58 +1,61 @@
 @import 'tailwindcss';
 
-/* 设计令牌：月面基地任务控制台 */
+/* 设计令牌：白色为主的科技感控制台 */
 @theme {
-  --color-space-950: #05080f;
-  --color-space-900: #0a1020;
-  --color-space-800: #111a2e;
-  --color-space-700: #1a2742;
-  --color-line: #26344f;
-  --color-dust-100: #eef1f7;
-  --color-dust-300: #c9c4b4;
-  --color-dust-500: #8b93a7;
-  --color-dust-700: #5f6880;
-  --color-amber: #f5a623;
-  --color-amber-deep: #c47d0e;
-  --color-alert: #ef4b53;
-  --color-cyan: #38d9f5;
-  --color-mint: #5ee1a0;
-  --color-token-person: #dbe7ff;
-  --color-token-coin: #f5a623;
-  --color-token-food: #5ee1a0;
+  --color-canvas: #f5f7fb;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef2f8;
+  --color-line: #dde4ee;
+  --color-ink: #0b1220;
+  --color-ink-2: #5b6779;
+  --color-ink-3: #8a94a6;
+  --color-accent: #0ea5e9;
+  --color-accent-deep: #0369a1;
+  --color-alert: #e11d48;
+  --color-amber: #f59e0b;
+  --color-amber-deep: #b45309;
+  --color-mint: #10b981;
+  --color-mint-deep: #047857;
+  --color-token-person: #2563eb;
+  --color-token-coin: #d97706;
+  --color-token-food: #059669;
 
   --font-display: 'Orbitron Variable', ui-monospace, monospace;
   --font-sans:
     system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC',
     'Microsoft YaHei', sans-serif;
 
-  --shadow-glow-cyan: 0 0 24px rgba(56, 217, 245, 0.35);
-  --shadow-glow-amber: 0 0 24px rgba(245, 166, 35, 0.35);
-  --shadow-glow-alert: 0 0 24px rgba(239, 75, 83, 0.45);
+  --shadow-glow-accent: 0 0 0 3px rgba(14, 165, 233, 0.18), 0 8px 24px rgba(14, 165, 233, 0.25);
+  --shadow-glow-alert: 0 0 0 3px rgba(225, 29, 72, 0.16), 0 8px 24px rgba(225, 29, 72, 0.22);
+  --shadow-card: 0 1px 2px rgba(11, 18, 32, 0.04), 0 12px 32px rgba(11, 18, 32, 0.08);
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
 body {
   margin: 0;
   min-height: 100%;
-  background: var(--color-space-950);
-  color: var(--color-dust-100);
+  background: var(--color-canvas);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   overscroll-behavior-y: none;
 }
 
+/* 顶部一抹青蓝光晕 + 细网格，营造科技感而不抢内容 */
 body {
   background-image:
-    radial-gradient(1200px 600px at 50% -200px, rgba(56, 217, 245, 0.12), transparent 60%),
-    radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 70% 15%, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 85% 60%, rgba(255, 255, 255, 0.35), transparent),
-    radial-gradient(2px 2px at 35% 80%, rgba(255, 255, 255, 0.3), transparent);
+    radial-gradient(900px 420px at 50% -160px, rgba(14, 165, 233, 0.16), transparent 65%),
+    linear-gradient(to right, rgba(11, 18, 32, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11, 18, 32, 0.035) 1px, transparent 1px);
+  background-size:
+    auto,
+    28px 28px,
+    28px 28px;
   background-attachment: fixed;
 }
 
@@ -62,17 +65,15 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 通用面板：细边框 + 微弱内发光，模拟舱内控制面板 */
+/* 通用面板：白底、细边框、柔和投影 */
 .panel {
-  background: linear-gradient(180deg, var(--color-space-800), var(--color-space-900));
+  background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: 1rem;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-card);
 }
 
-/* LED 读数风格的数字 */
+/* 读数：几何显示字体 + 等宽数字 */
 .readout {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
@@ -103,16 +104,16 @@ body {
     border-color: var(--color-alert);
   }
   100% {
-    box-shadow: none;
+    box-shadow: var(--shadow-card);
   }
 }
 @keyframes flash-gain {
   0% {
-    box-shadow: var(--shadow-glow-cyan);
-    border-color: var(--color-cyan);
+    box-shadow: var(--shadow-glow-accent);
+    border-color: var(--color-accent);
   }
   100% {
-    box-shadow: none;
+    box-shadow: var(--shadow-card);
   }
 }
 .flash-alert {

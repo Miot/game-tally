@@ -1,13 +1,13 @@
-/** 机器人头像配色，索引即 Profile.avatar */
+/** 机器人头像配色，索引即 Profile.avatar；饱和度按白底可读性选取 */
 export const AVATAR_PALETTES: ReadonlyArray<{ name: string; body: string; eye: string }> = [
-  { name: '青', body: '#38d9f5', eye: '#05080f' },
-  { name: '琥珀', body: '#f5a623', eye: '#05080f' },
-  { name: '薄荷', body: '#5ee1a0', eye: '#05080f' },
-  { name: '玫瑰', body: '#f472b6', eye: '#05080f' },
-  { name: '紫', body: '#a78bfa', eye: '#05080f' },
-  { name: '月尘', body: '#c9c4b4', eye: '#05080f' },
-  { name: '橙', body: '#fb923c', eye: '#05080f' },
-  { name: '天蓝', body: '#60a5fa', eye: '#05080f' },
+  { name: '青', body: '#0ea5e9', eye: '#ffffff' },
+  { name: '琥珀', body: '#f59e0b', eye: '#ffffff' },
+  { name: '薄荷', body: '#10b981', eye: '#ffffff' },
+  { name: '玫瑰', body: '#ec4899', eye: '#ffffff' },
+  { name: '紫', body: '#8b5cf6', eye: '#ffffff' },
+  { name: '石墨', body: '#64748b', eye: '#ffffff' },
+  { name: '橙', body: '#f97316', eye: '#ffffff' },
+  { name: '靛蓝', body: '#4f46e5', eye: '#ffffff' },
 ]
 
 export function avatarPalette(index: number) {

@@ -55,10 +55,10 @@ watch(
       <div class="shrink-0" :class="[colorClass, isHero ? 'h-12 w-12' : 'h-9 w-9']">
         <TokenIcon :kind="definition.token" />
       </div>
-      <h3 class="font-display text-xs tracking-[0.3em] text-dust-500 uppercase">
+      <h3 class="font-display text-xs tracking-[0.3em] text-ink-2 uppercase">
         {{ definition.name }}
       </h3>
-      <span v-if="isHero" class="ml-auto font-display text-[10px] tracking-widest text-dust-700">
+      <span v-if="isHero" class="ml-auto font-display text-[10px] tracking-widest text-ink-3">
         排行依据
       </span>
     </header>
@@ -76,7 +76,7 @@ watch(
       <div class="flex items-center gap-2">
         <button
           type="button"
-          class="tap flex items-center justify-center rounded-full border-2 border-alert/70 bg-space-700 font-display font-bold text-alert"
+          class="tap flex items-center justify-center rounded-full border-2 border-alert/60 bg-alert/8 font-display font-bold text-alert"
           :class="isHero ? 'h-16 w-16 text-2xl' : 'h-14 w-14 text-xl'"
           :disabled="!canDecrease"
           :data-testid="`counter-${definition.id}-dec-${mainStep}`"
@@ -89,7 +89,7 @@ watch(
           v-for="step in subSteps"
           :key="`dec-${step}`"
           type="button"
-          class="tap flex h-11 min-w-14 items-center justify-center rounded-full border border-alert/40 bg-space-800 px-3 font-display text-sm text-alert/90"
+          class="tap flex h-11 min-w-14 items-center justify-center rounded-full border border-alert/40 bg-surface px-3 font-display text-sm text-alert"
           :disabled="!canDecrease"
           :data-testid="`counter-${definition.id}-dec-${step}`"
           :aria-label="`${definition.name} 减 ${step}`"
@@ -104,7 +104,7 @@ watch(
           v-for="step in subSteps"
           :key="`inc-${step}`"
           type="button"
-          class="tap flex h-11 min-w-14 items-center justify-center rounded-full border border-cyan/40 bg-space-800 px-3 font-display text-sm text-cyan/90"
+          class="tap flex h-11 min-w-14 items-center justify-center rounded-full border border-accent/40 bg-surface px-3 font-display text-sm text-accent-deep"
           :disabled="!canIncrease"
           :data-testid="`counter-${definition.id}-inc-${step}`"
           :aria-label="`${definition.name} 加 ${step}`"
@@ -114,7 +114,7 @@ watch(
         </button>
         <button
           type="button"
-          class="tap flex items-center justify-center rounded-full border-2 border-cyan/70 bg-space-700 font-display font-bold text-cyan"
+          class="tap flex items-center justify-center rounded-full border-2 border-accent/60 bg-accent/10 font-display font-bold text-accent-deep"
           :class="isHero ? 'h-16 w-16 text-2xl' : 'h-14 w-14 text-xl'"
           :disabled="!canIncrease"
           :data-testid="`counter-${definition.id}-inc-${mainStep}`"

@@ -25,8 +25,8 @@ const emit = defineEmits<{ select: [playerId: string] }>()
       class="tap flex shrink-0 items-center gap-2 rounded-full border py-1.5 pr-3 pl-1.5"
       :class="
         player.playerId === activeId
-          ? 'border-cyan bg-space-700 shadow-glow-cyan'
-          : 'border-line bg-space-800'
+          ? 'border-accent bg-accent/10 shadow-glow-accent'
+          : 'border-line bg-surface'
       "
       :data-testid="`chip-${player.playerId}`"
       :aria-pressed="player.playerId === activeId"
@@ -35,8 +35,8 @@ const emit = defineEmits<{ select: [playerId: string] }>()
       <span class="relative h-7 w-7">
         <RobotAvatar :index="player.avatar" :offline="!isOnline(player.playerId)" />
         <span
-          class="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border border-space-900"
-          :class="isOnline(player.playerId) ? 'bg-mint' : 'bg-dust-700'"
+          class="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border border-surface"
+          :class="isOnline(player.playerId) ? 'bg-mint' : 'bg-ink-3'"
         />
       </span>
       <span class="max-w-20 truncate text-sm">

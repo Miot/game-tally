@@ -18,7 +18,7 @@ watch(
     dataUrl.value = await QRCode.toDataURL(url, {
       width: 640,
       margin: 1,
-      color: { dark: '#0a1020', light: '#eef1f7' },
+      color: { dark: '#0b1220', light: '#ffffff' },
     })
   },
   { immediate: true },
@@ -37,18 +37,18 @@ async function shareLink(): Promise<void> {
 <template>
   <van-popup v-model:show="show" position="bottom" round closeable safe-area-inset-bottom>
     <div class="flex flex-col items-center px-4 pt-5 pb-6">
-      <h2 class="font-display text-sm tracking-[0.3em] text-dust-500 uppercase">邀请同桌</h2>
-      <p class="readout mt-2 text-5xl tracking-[0.2em] text-cyan" data-testid="qr-room-code">
+      <h2 class="font-display text-sm tracking-[0.3em] text-ink-2 uppercase">邀请同桌</h2>
+      <p class="readout mt-2 text-5xl tracking-[0.2em] text-accent-deep" data-testid="qr-room-code">
         {{ code }}
       </p>
-      <p class="mt-1 text-xs text-dust-500">对方用相机扫码，或在首页输入房间码</p>
+      <p class="mt-1 text-xs text-ink-2">对方用相机扫码，或在首页输入房间码</p>
       <img
         v-if="dataUrl"
         :src="dataUrl"
         alt="房间二维码"
-        class="mt-4 h-56 w-56 rounded-2xl border-4 border-dust-100 bg-dust-100"
+        class="mt-4 h-56 w-56 rounded-2xl border border-line bg-surface p-2 shadow-sm"
       />
-      <p class="mt-3 max-w-full truncate px-2 text-[11px] text-dust-700 select-all">{{ url }}</p>
+      <p class="mt-3 max-w-full truncate px-2 text-[11px] text-ink-3 select-all">{{ url }}</p>
       <div class="mt-4 flex w-full gap-2">
         <van-button v-if="canCopy" block round plain type="primary" @click="copyLink">
           复制链接

@@ -64,3 +64,16 @@
 
 ## 6. 决策结论
 综合评分 91，建议「通过」，可提交并推送触发 GitHub Pages 部署。
+
+## 增量验证（2026-09-20 22:40）：浅色主题与 BGG 封面入口
+
+| 项目 | 结果 |
+|------|------|
+| `pnpm test` | 6 个文件 32 个用例通过（新增封面地址校验） |
+| `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` | 通过 |
+| `pnpm build` | 通过 |
+| `pnpm test:e2e` | 3 个用例通过（封面按钮沿用 create-room 测试标识） |
+| `E2E_NETWORK=1 pnpm test:e2e tests/e2e/sync.spec.ts` | 通过，约 22 秒 |
+| 截图复核 | 首页封面入口、房间、排行榜、邀请、设置五页在浅色主题下对比度与布局正常 |
+
+评分不变（91，通过）。新增风险：封面依赖 BGG 图片 CDN，在大陆加载可能偏慢；已做加载失败退回自绘占位，入口仍可用。

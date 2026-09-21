@@ -3,6 +3,7 @@ import type { GameDefinition } from './types'
 /**
  * 《月球殖民地》Moon Colony Bloodbath
  * 资料来源：BGG #425549、Rio Grande Games 官方页、RulesPal 规则书（2026-09-20 查阅）。
+ * 封面图直接引用 BGG 图片 CDN（pic8638247），不落库到仓库。
  * 胜负只看幸存者数量，因此幸存者为主计数器；钱与食物是游戏中最频繁增减的两种 token。
  */
 export const moonColonyBloodbath: GameDefinition = {
@@ -16,6 +17,14 @@ export const moonColonyBloodbath: GameDefinition = {
   players: { min: 1, max: 5 },
   playtimeMinutes: { min: 45, max: 90 },
   winCondition: '游戏结束时幸存者最多的玩家获胜；殖民地无人时即出局。',
+  cover: {
+    src: 'https://cf.geekdo-images.com/KDrRxEKQMmHyM0QQ2ONX4Q__itempage/img/dc_3UTmiIELKRfy83HMVV4jotDk=/fit-in/700x700/filters:strip_icc()/pic8638247.jpg',
+    src2x:
+      'https://cf.geekdo-images.com/KDrRxEKQMmHyM0QQ2ONX4Q__large/img/UZqhZSdNYcdj8MmlWhNUzvHSci4=/fit-in/1024x1024/filters:no_upscale():strip_icc()/pic8638247.jpg',
+    thumb:
+      'https://cf.geekdo-images.com/KDrRxEKQMmHyM0QQ2ONX4Q__square200/img/mljgQpJjOAhLBHeMegGCTCJkGcs=/200x200/filters:strip_icc()/pic8638247.jpg',
+    alt: 'Moon Colony Bloodbath 桌游封面（来自 BoardGameGeek）',
+  },
   counters: [
     {
       id: 'survivors',

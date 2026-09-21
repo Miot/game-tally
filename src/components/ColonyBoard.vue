@@ -57,9 +57,9 @@ const lastChangeText = computed(() => {
             {{ game.elimination.label }}
           </span>
         </div>
-        <p class="truncate text-xs text-dust-500">{{ subtitle }}</p>
+        <p class="truncate text-xs text-ink-2">{{ subtitle }}</p>
       </div>
-      <p v-if="lastChangeText" class="max-w-28 text-right text-[11px] leading-tight text-dust-500">
+      <p v-if="lastChangeText" class="max-w-28 text-right text-[11px] leading-tight text-ink-2">
         {{ lastChangeText }}
       </p>
     </header>
@@ -78,7 +78,7 @@ const lastChangeText = computed(() => {
         v-for="action in game.quickActions"
         :key="action.id"
         type="button"
-        class="tap min-h-11 flex-1 rounded-full border border-amber/50 bg-space-800 px-4 font-display text-xs tracking-wider text-amber"
+        class="tap min-h-11 flex-1 rounded-full border border-amber/50 bg-surface px-4 font-display text-xs tracking-wider text-amber-deep"
         :data-testid="`quick-${action.id}`"
         @click="emit('quick', action.id)"
       >
@@ -86,7 +86,7 @@ const lastChangeText = computed(() => {
       </button>
       <button
         type="button"
-        class="tap min-h-11 rounded-full border border-line bg-space-800 px-4 text-sm text-dust-300"
+        class="tap min-h-11 rounded-full border border-line bg-surface px-4 text-sm text-ink-2"
         :disabled="!canUndo"
         @click="emit('undo')"
       >

@@ -30,6 +30,14 @@ export interface QuickActionDefinition {
   delta: Readonly<Partial<Record<CounterId, number>>>
 }
 
+/** 封面图：直接引用 BGG 图片 CDN 的固定尺寸变体，thumb 用于小尺寸场景 */
+export interface CoverImage {
+  src: string
+  src2x: string
+  thumb: string
+  alt: string
+}
+
 export interface EliminationRule {
   counterId: CounterId
   /** 计数器小于等于该值即视为出局 */
@@ -50,6 +58,7 @@ export interface GameDefinition {
   playtimeMinutes: { min: number; max: number }
   /** 一句话说明胜负判定，展示在首页卡片 */
   winCondition: string
+  cover: CoverImage
   counters: readonly CounterDefinition[]
   quickActions: readonly QuickActionDefinition[]
   ranking: { counterId: CounterId; order: 'desc' | 'asc' }
