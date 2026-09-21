@@ -22,11 +22,9 @@ const emit = defineEmits<{ select: [playerId: string] }>()
       v-for="player in players"
       :key="player.playerId"
       type="button"
-      class="tap flex shrink-0 items-center gap-2 rounded-full border py-1.5 pr-3 pl-1.5"
+      class="tap flex shrink-0 items-center gap-2 rounded-full border bg-surface py-1.5 pr-3 pl-1.5"
       :class="
-        player.playerId === activeId
-          ? 'border-accent bg-accent/10 shadow-glow-accent'
-          : 'border-line bg-surface'
+        player.playerId === activeId ? 'border-accent shadow-glow-accent' : 'border-line shadow-sm'
       "
       :data-testid="`chip-${player.playerId}`"
       :aria-pressed="player.playerId === activeId"

@@ -22,22 +22,38 @@ const canDecrease = computed(() => props.value > props.definition.min)
 const canIncrease = computed(() => props.value < props.definition.max)
 const quickActions = computed(() => props.actions ?? [])
 
-/* 数值变化时闪烁：减少为红色警报，增加为青蓝 */
+/*
+ * 数值变化的三重反馈：卡片闪色、读数弹跳、增量气泡浮出。
+ * 先清空再在下一帧赋值，连点时动画才会重新播放。
+ */
 const flashClass = ref('')
-const { start: clearFlashLater } = useTimeoutFn(
+const popClass = ref('')
+const bubble = ref<{ text: string; up: boolean } | null>(null)
+
+const { start: clearEffects } = useTimeoutFn(
   () => {
     flashClass.value = ''
+    popClass.value = ''
+    bubble.value = null
   },
-  600,
+  720,
   { immediate: false },
 )
+
 watch(
   () => props.value,
   (next, prev) => {
+    const delta = next - prev
+    if (delta === 0) return
+    const up = delta > 0
     flashClass.value = ''
+    popClass.value = ''
+    bubble.value = null
     requestAnimationFrame(() => {
-      flashClass.value = next < prev ? 'flash-alert' : 'flash-gain'
-      clearFlashLater()
+      flashClass.value = up ? 'flash-gain' : 'flash-alert'
+      popClass.value = up ? 'pop-up' : 'pop-down'
+      bubble.value = { text: `${up ? '+' : '−'}${Math.abs(delta)}`, up }
+      clearEffects()
     })
   },
 )
@@ -73,15 +89,28 @@ watch(
       </span>
     </header>
 
-    <p
-      class="readout text-center"
-      :class="isHero ? 'my-3 text-7xl' : 'my-2 text-5xl'"
-      :style="{ color: definition.color }"
-      :data-testid="`counter-${definition.id}-value`"
-      :aria-label="`${definition.name} ${value}`"
-    >
-      {{ value }}
-    </p>
+    <div class="relative" :class="isHero ? 'my-3' : 'my-2'">
+      <p
+        class="readout text-center"
+        :class="[isHero ? 'text-7xl' : 'text-5xl', popClass]"
+        :style="{ color: definition.color }"
+        :data-testid="`counter-${definition.id}-value`"
+        :aria-label="`${definition.name} ${value}`"
+      >
+        {{ value }}
+      </p>
+      <span
+        v-if="bubble"
+        class="readout pointer-events-none absolute top-1/2 right-3 -mt-3 font-bold"
+        :class="[
+          isHero ? 'text-2xl' : 'text-xl',
+          bubble.up ? 'text-accent-deep bubble-rise' : 'text-alert bubble-sink',
+        ]"
+        aria-hidden="true"
+      >
+        {{ bubble.text }}
+      </span>
+    </div>
 
     <div v-if="editable" class="flex items-center justify-between gap-2">
       <div class="flex items-center gap-2">

@@ -142,3 +142,11 @@
 | `pnpm test` / `pnpm test:e2e` | 5 个与 3 个用例通过 |
 | `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` / `pnpm build` | 通过 |
 | 视觉核对 | 黑底上白色卡片与药丸对比清晰，顶部所有交互文字可读 |
+
+## 增量验证（2026-09-21 02:20）：切换条可读性与点击反馈
+
+| 项目 | 结果 |
+|------|------|
+| `pnpm test` / `pnpm test:e2e` | 5 个与 3 个用例通过 |
+| `pnpm type-check` / `pnpm lint:check` / `pnpm format:check` / `pnpm build` | 通过 |
+| 视觉核对 | 切换条三个玩家（选中/未选中/离线）在黑底上均清晰；减少、增加、静止三帧动画表现正确且无残留 |
