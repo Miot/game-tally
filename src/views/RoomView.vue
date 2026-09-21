@@ -10,9 +10,9 @@ import { showConfirmDialog, showToast } from 'vant'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { backdrops } from '@/components/backdrops'
 import ColonyBoard from '@/components/ColonyBoard.vue'
 import ConnectionBadge from '@/components/ConnectionBadge.vue'
+import CoverBackdrop from '@/components/CoverBackdrop.vue'
 import PlayerChips from '@/components/PlayerChips.vue'
 import ProfileEditor from '@/components/ProfileEditor.vue'
 import RankSheet from '@/components/RankSheet.vue'
@@ -29,7 +29,6 @@ const router = useRouter()
 const settings = useSettingsStore()
 const room = useRoomStore()
 const game = defaultGame
-const Backdrop = backdrops[game.backdrop]
 
 const code = computed(() => normalizeRoomCode(props.code))
 const shareUrl = computed(() => `${location.origin}${location.pathname}#/r/${code.value}`)
@@ -145,16 +144,20 @@ async function copyCode(): Promise<void> {
 }
 
 const menuActions = [
+  { name: '邀请同桌', id: 'invite' },
   { name: '排行榜', id: 'rank' },
   { name: '重新连接', id: 'reconnect' },
-  { name: '重置我的计数', id: 'reset', color: '#f5a623' },
+  { name: '重置我的计数', id: 'reset', color: '#b45309' },
   { name: '设置与网络诊断', id: 'settings' },
-  { name: '离开房间', id: 'leave', color: '#ef4b53' },
+  { name: '离开房间', id: 'leave', color: '#e11d48' },
 ]
 
 async function onMenuSelect(action: { id: string }): Promise<void> {
   showMenu.value = false
   switch (action.id) {
+    case 'invite':
+      showQr.value = true
+      break
     case 'rank':
       showRank.value = true
       break
@@ -188,8 +191,8 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
 </script>
 
 <template>
-  <main class="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-3 px-4 pt-3 pb-24">
-    <Backdrop />
+  <main class="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-3 px-4 pt-3 pb-8">
+    <CoverBackdrop :cover="game.cover" />
     <header class="flex items-center gap-2">
       <button
         type="button"
@@ -269,16 +272,6 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
       <span class="h-3 w-3 rounded-full bg-amber pulse" />
       <p class="text-sm">正在进入房间…</p>
     </div>
-
-    <nav
-      class="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-surface/90 backdrop-blur"
-      style="padding-bottom: env(safe-area-inset-bottom)"
-    >
-      <div class="mx-auto flex max-w-md gap-2 px-4 py-2">
-        <van-button block round plain type="primary" @click="showQr = true">邀请</van-button>
-        <van-button block round type="primary" @click="showRank = true">排行榜</van-button>
-      </div>
-    </nav>
 
     <RoomQrSheet v-model:show="showQr" :code="code" :url="shareUrl" />
     <RankSheet

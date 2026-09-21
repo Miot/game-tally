@@ -55,23 +55,30 @@ const sharedActions = computed(() =>
 
 <template>
   <div class="flex flex-col gap-3">
-    <div class="flex items-center gap-2 px-1 text-xs text-ink-2">
-      <span class="h-6 w-6 shrink-0">
-        <RobotAvatar :index="state.avatar" :offline="!online" />
-      </span>
-      <span class="truncate font-medium text-ink">{{ state.name }}</span>
-      <span class="shrink-0">· {{ statusText }}</span>
-      <span
-        v-if="eliminated"
-        class="shrink-0 rounded-full border border-alert bg-alert/10 px-2 py-0.5 font-display text-[10px] tracking-widest text-alert"
+    <!-- 这一行浮在封面之上，因此文字装在半透明药丸里以保证可读 -->
+    <div class="flex items-center gap-2 text-xs">
+      <div
+        class="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-surface/85 px-2.5 py-1.5 text-ink-2 shadow-sm backdrop-blur-sm"
       >
-        {{ game.elimination.label }}
-      </span>
+        <span class="h-5 w-5 shrink-0">
+          <RobotAvatar :index="state.avatar" :offline="!online" />
+        </span>
+        <span class="truncate font-medium text-ink">{{ state.name }}</span>
+        <span class="shrink-0">· {{ statusText }}</span>
+        <span
+          v-if="eliminated"
+          class="shrink-0 rounded-full border border-alert bg-alert/10 px-2 py-0.5 font-display text-[10px] tracking-widest text-alert"
+        >
+          {{ game.elimination.label }}
+        </span>
+        <span v-if="lastChangeText" class="ml-auto shrink-0 truncate pl-1 text-ink-3">
+          {{ lastChangeText }}
+        </span>
+      </div>
       <button
         v-if="editable"
         type="button"
-        class="tap ml-auto shrink-0 rounded-full border border-line bg-surface px-3 py-1 text-xs text-ink-2 shadow-sm"
-        :class="lastChangeText ? 'ml-2' : ''"
+        class="tap shrink-0 rounded-full border border-line bg-surface px-3 py-1.5 text-ink-2 shadow-sm"
         :disabled="!canUndo"
         @click="emit('undo')"
       >

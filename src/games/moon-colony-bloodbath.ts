@@ -46,7 +46,7 @@ export const moonColonyBloodbath: GameDefinition = {
       id: 'money',
       name: '钱',
       icon: moneyIcon,
-      color: '#111827',
+      color: '#b45309',
       initial: 4,
       min: 0,
       max: 999,
@@ -67,7 +67,6 @@ export const moonColonyBloodbath: GameDefinition = {
     { id: 'mine', label: '采矿 +4', delta: { money: 4 } },
     { id: 'farm', label: '耕作 +4', delta: { food: 4 } },
   ],
-  backdrop: 'moon',
   ranking: { counterId: 'survivors', order: 'desc' },
   elimination: { counterId: 'survivors', atOrBelow: 0, label: '殖民地失败' },
 }

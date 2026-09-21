@@ -33,7 +33,8 @@ test.describe('房间流程', () => {
     await expect(survivors).toHaveText('29')
     await expect(page.getByTestId('counter-food-value')).toHaveText('8')
 
-    await page.getByRole('button', { name: '邀请' }).click()
+    await page.getByRole('button', { name: '更多' }).click()
+    await page.getByText('邀请同桌').click()
     await expect(page.getByRole('img', { name: '房间二维码' })).toBeVisible()
     const code = await page.getByTestId('room-code').innerText()
     await expect(page.getByTestId('qr-room-code')).toHaveText(code.trim())

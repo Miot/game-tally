@@ -13,7 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ColonyBoard: typeof import('./components/ColonyBoard.vue')['default']
     ConnectionBadge: typeof import('./components/ConnectionBadge.vue')['default']
-    MoonBackdrop: typeof import('./components/backdrops/MoonBackdrop.vue')['default']
+    CoverBackdrop: typeof import('./components/CoverBackdrop.vue')['default']
     PlayerChips: typeof import('./components/PlayerChips.vue')['default']
     ProfileEditor: typeof import('./components/ProfileEditor.vue')['default']
     RankSheet: typeof import('./components/RankSheet.vue')['default']
