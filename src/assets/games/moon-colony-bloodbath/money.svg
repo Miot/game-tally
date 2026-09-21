@@ -1,0 +1,23 @@
+<!--
+  钱 token：游戏中代表月球矿产的双峰标志。
+  依据 Rio Grande Games 官方规则书 MCB.pdf 第 2 页的金钱指示物重绘为矢量，
+  保留双峰符号的识别特征，底色由黑改为浅琥珀以适配浅色界面。
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <defs>
+    <linearGradient id="m-peak" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbbf24" />
+      <stop offset="1" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="32" cy="32" r="30" fill="#fef3c7" />
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#d97706" stroke-width="3" />
+
+  <!-- 左右两座尖峰共用底线，与规则书的双峰矿产标志同构 -->
+  <path d="M15 44 L24.5 20 L34 44 Z" fill="url(#m-peak)" stroke="#92400e" stroke-width="2.6"
+    stroke-linejoin="round" />
+  <path d="M30 44 L39.5 20 L49 44 Z" fill="url(#m-peak)" stroke="#92400e" stroke-width="2.6"
+    stroke-linejoin="round" />
+  <path d="M15.5 45.5h33" stroke="#92400e" stroke-width="3.2" stroke-linecap="round" />
+</svg>

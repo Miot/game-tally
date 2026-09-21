@@ -1,0 +1,29 @@
+<!--
+  食物 token：殖民地温室里的苹果。
+  依据 Rio Grande Games 官方规则书 MCB.pdf 第 2 页的食物指示物重绘为矢量，
+  保留苹果与叶片的识别特征，底色由黄改为浅绿以适配浅色界面。
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <defs>
+    <linearGradient id="f-apple" x1="0.3" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#4ade80" />
+      <stop offset="1" stop-color="#15803d" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="32" cy="32" r="30" fill="#d1fae5" />
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#059669" stroke-width="3" />
+
+  <!-- 果身：左右两瓣在顶部收拢出果窝 -->
+  <path d="M32 22c3-3.4 8.2-4.2 12 -1.2 4.4 3.5 5 10.8 2.2 17.4C43.6 44.4 38.6 49 32 49
+    c-6.6 0-11.6-4.6-14.2-10.8-2.8-6.6-2.2-13.9 2.2-17.4 3.8-3 9-2.2 12 1.2z"
+    fill="url(#f-apple)" stroke="#14532d" stroke-width="2.6" stroke-linejoin="round" />
+  <path d="M25 27c-2.2 2-3.2 5-2.8 8.4" fill="none" stroke="#bbf7d0" stroke-width="2.8"
+    stroke-linecap="round" opacity="0.85" />
+
+  <!-- 果茎与叶片 -->
+  <path d="M32 22c0-4 .6-7 2-9.4" fill="none" stroke="#7c2d12" stroke-width="3"
+    stroke-linecap="round" />
+  <path d="M34.4 16.6c3-3.4 7.4-4 10.6-2.6-.6 3.8-3.6 6.8-7.6 7.2-1.4.2-2.4 0-3-.6-.6-.8-.6-2.4 0-4z"
+    fill="#16a34a" stroke="#14532d" stroke-width="2.2" stroke-linejoin="round" />
+</svg>

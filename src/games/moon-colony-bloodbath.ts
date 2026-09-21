@@ -1,6 +1,6 @@
-import foodIcon from '@/assets/games/moon-colony-bloodbath/food.png'
-import moneyIcon from '@/assets/games/moon-colony-bloodbath/money.png'
-import personIcon from '@/assets/games/moon-colony-bloodbath/person.png'
+import foodIcon from '@/assets/games/moon-colony-bloodbath/food.svg'
+import moneyIcon from '@/assets/games/moon-colony-bloodbath/money.svg'
+import personIcon from '@/assets/games/moon-colony-bloodbath/person.svg'
 
 import type { GameDefinition } from './types'
 
@@ -8,7 +8,7 @@ import type { GameDefinition } from './types'
  * 《月球殖民地》Moon Colony Bloodbath
  * 资料来源：BGG #425549、Rio Grande Games 官方页、RulesPal 规则书（2026-09-20 查阅）。
  * 封面图直接引用 BGG 图片 CDN（pic8638247），不落库到仓库。
- * token 图标取自 Rio Grande Games 官方规则书 MCB.pdf 第 2 页「Contents」中的 1 单位 token。
+ * token 图标依据 Rio Grande Games 官方规则书 MCB.pdf 第 2 页的指示物重绘为矢量（原图仅 40–65px，放大后模糊）。
  * 胜负只看幸存者数量，因此幸存者为主计数器；钱与食物是游戏中最频繁增减的两种 token。
  */
 export const moonColonyBloodbath: GameDefinition = {
