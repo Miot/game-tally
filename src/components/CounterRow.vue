@@ -78,16 +78,30 @@ watch(
 
 <template>
   <div
-    class="hair-b flex flex-col justify-center gap-3 px-3 py-2 last:border-b-0"
+    class="hair-b flex flex-col justify-center gap-2 px-3 py-2 last:border-b-0"
     :style="rowInk"
     :data-counter="definition.id"
   >
-    <!-- 标题行：资源名是这一行的标题，不是角标 -->
+    <!--
+      标题行：资源名是这一行的标题，页边跟着这个数的注解 —— 开局值与最近几道铅笔痕。
+      行动键已经搬到读数正下方，标题行右端空了出来，注解放回这里省掉整整一行。
+    -->
     <div class="flex items-center gap-2">
-      <h3 class="lead bg-[var(--key-ink)] px-2.5 py-1 text-paper">
+      <h3 class="lead bg-[var(--key-ink)] px-2.5 py-0.5 text-paper">
         {{ definition.name }}
       </h3>
       <span v-if="isHero" class="label-cn font-normal text-pencil">排行依据</span>
+      <span class="label-cn ml-auto flex items-baseline gap-2 font-normal text-pencil">
+        <span>起始 {{ definition.initial }}</span>
+        <span
+          v-for="mark in marks"
+          :key="mark.id"
+          class="tabular pencil-in text-pencil-light"
+          aria-hidden="true"
+        >
+          {{ mark.text }}
+        </span>
+      </span>
     </div>
 
     <div class="flex items-center gap-2">
@@ -129,22 +143,6 @@ watch(
             aria-hidden="true"
           ></span>
         </div>
-        <!--
-          读数的注解行：开局值，以及最近几次改动留下的铅笔痕。
-          两者都是关于这个数的，放在它正下方比丢在标题行的页边更好读，
-          也不会和标题行「采矿 +4」这类按钮上的数字撞车。
-        -->
-        <p class="label-cn mt-1.5 flex items-baseline justify-center gap-2 font-normal text-pencil">
-          <span>起始 {{ definition.initial }}</span>
-          <span
-            v-for="mark in marks"
-            :key="mark.id"
-            class="tabular pencil-in text-pencil-light"
-            aria-hidden="true"
-          >
-            {{ mark.text }}
-          </span>
-        </p>
       </div>
 
       <div v-if="editable" class="flex shrink-0 gap-1.5">
@@ -182,7 +180,7 @@ watch(
         v-for="action in quickActions"
         :key="action.id"
         type="button"
-        class="tap-stamp min-h-14 min-w-0 max-w-64 flex-1 border-2 border-[var(--key-ink)] bg-paper px-6 text-body font-bold text-[var(--key-ink)]"
+        class="tap-stamp min-h-12 min-w-0 max-w-64 flex-1 border-2 border-[var(--key-ink)] bg-paper px-6 text-body font-bold text-[var(--key-ink)]"
         :data-testid="`quick-${action.id}`"
         @click="emit('quick', action.id)"
       >

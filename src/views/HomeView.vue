@@ -162,8 +162,8 @@ function heroIconOf(game: GameDefinition): string {
     </section>
 
     <div class="flex-1"></div>
-    <p class="hair-t px-3 py-3 text-body text-pencil">
-      不用注册。同桌各自打开这一页，扫一下就在同一张计分纸上了。桌游资料与封面来自 BoardGameGeek。
+    <p class="hair-t px-3 py-3 text-xs text-pencil">
+      不用注册。同桌各自打开这一页，扫一下就在同一张计分纸上了。
     </p>
   </main>
 </template>

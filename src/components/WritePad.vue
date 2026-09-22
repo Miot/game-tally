@@ -94,7 +94,7 @@ const lastChangeText = computed(() => {
   >
     <!-- 表头：谁的一栏，以及这一栏能不能写 -->
     <header
-      class="flex shrink-0 items-center gap-2 px-3 py-2"
+      class="flex shrink-0 items-center gap-2 px-3 py-1"
       :class="editable ? 'hair-b' : 'border-b border-carbon-line'"
     >
       <template v-if="editable">
@@ -104,12 +104,12 @@ const lastChangeText = computed(() => {
         </p>
         <button
           type="button"
-          class="tap label-cn ml-auto flex min-h-11 shrink-0 items-center gap-1.5 border-2 border-graphite bg-paper px-3 text-graphite"
+          class="tap ml-auto flex h-11 w-11 shrink-0 items-center justify-center border-2 border-graphite bg-paper text-graphite"
           :disabled="!canUndo"
+          aria-label="撤销"
           @click="emit('undo')"
         >
-          <span class="h-4 w-4"><PadIcon name="undo" /></span>
-          撤销
+          <span class="h-5 w-5"><PadIcon name="undo" /></span>
         </button>
       </template>
 
