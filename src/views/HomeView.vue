@@ -103,20 +103,21 @@ function resumeRoom(): void {
       <p class="label mt-1 text-pencil">{{ game.name.en }}</p>
     </div>
 
-    <dl class="hair-t grid grid-cols-3 text-center">
+    <!-- 「记这些」的值最长，三等分列在窄屏上放不下，给它整行 -->
+    <dl class="hair-t grid grid-cols-2 text-center">
       <div class="hair-r px-2 py-2.5">
         <dt class="label-cn text-pencil">人数</dt>
         <dd class="tabular mt-1 text-body font-bold text-graphite">
           {{ game.players.min }}–{{ game.players.max }}
         </dd>
       </div>
-      <div class="hair-r px-2 py-2.5">
+      <div class="px-2 py-2.5">
         <dt class="label-cn text-pencil">时长</dt>
         <dd class="tabular mt-1 text-body font-bold text-graphite">
           {{ game.playtimeMinutes.min }}–{{ game.playtimeMinutes.max }} 分
         </dd>
       </div>
-      <div class="px-2 py-2.5">
+      <div class="hair-t col-span-2 px-2 py-2.5">
         <dt class="label-cn text-pencil">记这些</dt>
         <dd class="mt-1 text-body font-bold text-graphite">
           {{ game.counters.map((c) => c.name).join('·') }}

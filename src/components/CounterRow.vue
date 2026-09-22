@@ -99,8 +99,8 @@ watch(
           class="tap tabular flex items-center justify-center border-2 font-bold"
           :class="
             isMainKey(step)
-              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-paper'
-              : 'h-13 w-13 border-graphite bg-paper text-body text-graphite'
+              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-paper max-[380px]:h-14 max-[380px]:w-14'
+              : 'h-13 w-13 border-graphite bg-paper text-body text-graphite max-[380px]:h-12 max-[380px]:w-12'
           "
           :disabled="!canDecrease"
           :data-testid="`counter-${definition.id}-dec-${step}`"
@@ -155,8 +155,8 @@ watch(
           class="tap tabular flex items-center justify-center border-2 font-bold"
           :class="
             isMainKey(step)
-              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-paper'
-              : 'h-13 w-13 border-graphite bg-paper text-body text-graphite'
+              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-paper max-[380px]:h-14 max-[380px]:w-14'
+              : 'h-13 w-13 border-graphite bg-paper text-body text-graphite max-[380px]:h-12 max-[380px]:w-12'
           "
           :disabled="!canIncrease"
           :data-testid="`counter-${definition.id}-inc-${step}`"
