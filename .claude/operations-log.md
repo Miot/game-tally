@@ -326,3 +326,24 @@ DESIGN.md 的版面段补了一句：房间页除展开的全桌表外**不得�
 
 ### 验证
 360px 窄屏专门截了一张（`narrow-360.png`）确认加了图标键之后表头栏仍放得下：返回、房间号、二维码、连接状态、菜单齐全无溢出。4 项 e2e、12 项单测、类型检查、lint、检测器零发现全过。
+
+## 2026-09-21 20:15 提交与部署
+
+两个提交推到 main：
+- `0ec1995` docs: 建立 PRODUCT.md 作为产品事实的唯一来源（3 文件，+117）
+- `8bc05c5` feat: 界面重构为「计分纸」，房间页以自己那一栏为主体（46 文件，+3631 −1216）
+
+提交前全绿：vue-tsc、ESLint、Prettier、12 项单测、4 项 e2e、构建、设计检测器。审查截图、
+hook 缓存与 live 会话状态由 .gitignore 挡在库外，入库的只有方向契约、design.json 与 live 配置。
+
+GitHub Actions run #35682352758 成功（build + deploy 各十几秒）。
+
+线上冒烟（Playwright 访问 https://miot.github.io/game-tally/ ）：
+- 首页标题正确，BGG 封面从 CDN 真实加载成功（非退回占位）；
+- 建房 → 起名 → 进入 → 减 5 → 采矿 +4，幸存者 25、钱 8，与预期一致；
+- 顶栏常驻邀请图标键在位；
+- 字体只请求了 `archivo-latin-standard-normal`（200），latin-ext 与 vietnamese 未被拉取，
+  证实子集裁剪生效；
+- 控制台零错误。
+
+截图存于 .impeccable/review/live-home.png、live-room.png、live-table-open.png。
