@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 test.describe('房间流程', () => {
   test('创建房间、记分、撤销、刷新恢复、打开邀请', async ({ page }) => {
     await page.goto('./')
-    await page.getByTestId('create-room').click()
+    await page.getByTestId('game-moon-colony-bloodbath').click()
     await expect(page).toHaveURL(/#\/r\/[A-HJ-NP-Z2-9]{4}$/)
     await page.getByPlaceholder('你的昵称').fill('阿波罗')
     await page.getByTestId('confirm-profile').click()
@@ -85,6 +85,29 @@ test.describe('房间流程', () => {
     await page.getByTestId('table-summary').click()
     await expect(page.getByTestId(/^chip-/).first()).toHaveAttribute('aria-label', /殖民地失败/)
     await expect(page.getByText('按规则本局在此结束')).toBeVisible()
+  })
+
+  test('首页四格填房间号加入', async ({ page }) => {
+    await page.goto('./')
+
+    // 没填满之前不能提交
+    await expect(page.getByTestId('join-room')).toBeDisabled()
+
+    await page.getByTestId('room-code-box-0').click()
+    await page.keyboard.type('K7PQ')
+    // 逐格落位，光标自己往后走
+    await expect(page.getByTestId('room-code-box-0')).toHaveValue('K')
+    await expect(page.getByTestId('room-code-box-3')).toHaveValue('Q')
+    await expect(page.getByTestId('join-room')).toBeEnabled()
+
+    // 退格删最后一位，按钮跟着禁用
+    await page.keyboard.press('Backspace')
+    await expect(page.getByTestId('room-code-box-3')).toHaveValue('')
+    await expect(page.getByTestId('join-room')).toBeDisabled()
+
+    await page.keyboard.type('Q')
+    await page.getByTestId('join-room').click()
+    await expect(page).toHaveURL(/#\/r\/K7PQ$/)
   })
 
   test('无效房间码回到首页', async ({ page }) => {

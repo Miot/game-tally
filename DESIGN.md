@@ -91,6 +91,8 @@ spacing:
   quick-key: "48px"
   sub-key: "52px"
   main-key: "64px"
+  join-key: "56px"
+  code-box: "72px"
   table-max: "38dvh"
   page-max: "28rem"
 components:
@@ -180,6 +182,31 @@ components:
     backgroundColor: "{colors.carbon}"
     textColor: "{colors.carbon-ink}"
     rounded: "{rounded.none}"
+  code-box:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.graphite}"
+    typography: "{typography.num-m}"
+    rounded: "{rounded.none}"
+    height: "{spacing.code-box}"
+  button-join:
+    backgroundColor: "{colors.graphite}"
+    textColor: "{colors.paper}"
+    typography: "{typography.label-cn}"
+    rounded: "{rounded.none}"
+    padding: "8px 16px"
+    height: "{spacing.join-key}"
+  game-card:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.graphite}"
+    typography: "{typography.label-cn}"
+    rounded: "{rounded.none}"
+    padding: "10px"
+  game-card-placeholder:
+    backgroundColor: "{colors.paper-2}"
+    textColor: "{colors.pencil}"
+    typography: "{typography.label-cn}"
+    rounded: "{rounded.none}"
+    padding: "24px 12px"
   resource-tag:
     backgroundColor: "{colors.resource-ink-blue}"
     textColor: "{colors.paper}"
@@ -254,7 +281,7 @@ components:
 - **Label CN**（`{typography.label-cn}`，不大写、0.06em 字距）：中文预印标签，列头、区块名、折叠条文字、按钮文字。中文不做大写与宽字距，否则会散架。
 - **Num S / M / L**（`{typography.num-s}` / `{typography.num-m}` / `{typography.num-l}`）：
   - **24px（num-s）**：展开表内的主资源读数、房间码，以及实心压印键上的步进数字。
-  - **40px（num-m）**：折叠条上的领先值，以及写字板读数破百后降下来的那一档。
+  - **40px（num-m）**：折叠条上的领先值、写字板读数破百后降下来的那一档，以及房间号四格里填进去的那个字符。
   - **64px（num-l）**：写字板上的常规读数，三个资源一视同仁。
 
 ### Named Rules
@@ -276,10 +303,12 @@ components:
 
 写字板内部同样是高度分配：表头行与跨资源行动条固定，三个资源行各取 `flex-1` 等分剩余高度。屏幕更高时长出来的空间归资源行，不归任何参照信息。
 
+**首页是同一条规则印在封面上。** 自上而下：品牌头（2px 石墨规则线收底）→ 加入区（标题「同桌给了你房间号」+ 房间号四格 + 整行 56px 实心石墨「加入这一局」，2px 石墨规则线收底）→ 上一局入口（纸二底、发丝线收底，只在本机存过房间时出现）→ 开一局（标题「或者开一局」+ 两列游戏网格，横纵间隙都是 12px）→ `flex-1` 的空白 → 发丝线起头的页脚说明。一桌人里只有一个人开局，其余三四个都是拿着房间号进来的，「加入」的使用频次高出三四倍，所以它占掉第一屏最显眼的那一段，开局的列表排在它下面。首页的剩余高度不分给任何内容：那块空白是留给这张列表长出来的。
+
 触控目标不小于 44px，主要操作在下半屏拇指可达区；主步进键 64px、副步进键 52px、行内行动键 56px、底部跨资源行动条 48px、折叠条 48px。380px 以下的窄屏上主副步进键降一档到 56 / 48px —— 字号上抬后读数会被两侧按键夹死，让宽度回给中间那个数，按键仍远在 44px 触控下限之上。展开表的行高是单一常量 `--pad-row: 2.875rem`（46px），它同时是那一行的触控高度。安全区由外壳的 `env(safe-area-inset-*)` 吸收；写字板把自身高度写成 `--pad-board-h`，便条据此停在它上沿之外。
 
 ### Named Rules
-**The Task Owns the Page Rule.** 版面按任务分配高度，不按信息量。访客此刻要做的那件事（在房间页是改自己的数）拿走剩余的全部高度；参照信息折叠成一条固定高度的横条，展开后也必须有上限（全桌表 ≤38dvh），不得再把操作面板挤成配角。
+**The Task Owns the Page Rule.** 版面按任务分配高度，不按信息量。访客此刻要做的那件事（在房间页是改自己的数）拿走剩余的全部高度；参照信息折叠成一条固定高度的横条，展开后也必须有上限（全桌表 ≤38dvh），不得再把操作面板挤成配角。首页同理，只是「那件事」由使用频次决定：拿房间号进来的人是开局的人的三四倍，所以加入区占最显眼的那一段，游戏列表排在它之下。
 
 **The Folded Bar Still Speaks Rule.** 折叠掉一块内容，就必须在折叠条上保住它的结论。全桌折叠条在任何状态下都要回答"谁在领先、我在第几"；一旦出现规则层面的终局（有人出局），整条换成红晕底 + 警示图标 + 明文，不能因为收起来就看不见。
 
@@ -334,6 +363,21 @@ components:
 - **Style:** 表格里的填空位——无框、无底色，只有底下一条 1px 发丝线，字写在线上。标签是 label-cn 铅笔灰，压在线上方。
 - **Focus:** 底线由 1px 发丝换成 2px 石墨，这是唯一的状态变化。不改底色、不加光晕。
 
+### 房间号四格（Room Code Boxes）
+
+预印在纸上的四个空格，一格一个字符。四格平分一行（间隙 8px）、高 72px、2px 石墨边框、纸底，字符居中用 40px 制表粗体石墨。它不是「填空位」那种写在线上的字段——房间号是这一页的主操作，所以用四个印好的格子，比一行小字更像「这里要填东西」。
+
+- **焦点：** 当前待填格的边框由石墨转印刷红，是全站唯一一处不叠那圈 2px 石墨外环的控件（`.code-box:focus-visible { outline: none }`）。理由是这格已经有一个明确的、位置更准的可见记号：红边框自己就在说「光标在这」；再套一圈外环会读成两层框，像这格填错了。插入符做透明（`caret-transparent`），红框就是光标。
+- **行为：** 值是一段连续字符串，第 n 格即第 n 个字符，光标永远落在下一个待填格，不允许中间空缺；点任意一格都会把光标收回待填格。退格删末位，左右方向键移动，整串可粘贴，输入自动大写并按房间码字母表过滤。
+- **随后的主行动：** 整行 56px 的实心石墨「加入这一局」，未填满四格时走通用禁用态（纸二底 + 纸三边框 + 淡铅笔字）。
+
+### 游戏卡片与占位格
+
+游戏列表是两列网格（`gap` 12px）。一张卡片就是一枚按钮，整块可按。
+
+- **卡片：** 纸底 + 2px 石墨边（sheet），竖向 flex。上半是 1:1 的封面图（`object-cover`，两列下按 `srcset`/`sizes` 取缩略图而不是大图；加载失败退回纸二底 + 自绘资源图标，入口仍可点）。下半由发丝线与封面分开，两行 13px：游戏名石墨 650，人数与时长「1–5 人 · 45–90 分」铅笔灰常规字重。按下时整张卡按通用触控反白。
+- **占位格：** 同一格网格里的「更多游戏／陆续加入」，1px 发丝线边框 + 纸二底 + 居中铅笔灰标签，随行拉伸到与卡片等高。用发丝线而不是 2px 石墨，是让「未填的格」轻于「已印上内容的卡」——它不是装饰，它在说明这是一张会长的列表。
+
 ### Sheets（底部抽屉 / 确认便签）
 - **Style:** 从底部抽出的一联纸。顶边 2px 石墨规则线，纸色底，无圆角，遮罩是 45% 不透明的石墨。
 - **Motion:** 面板 220ms 平移上滑（cubic-bezier(0.16, 1, 0.3, 1)），遮罩 180ms 淡入。不缩放、不弹跳。
@@ -387,6 +431,8 @@ components:
 - **Do** 给每一个状态配一个非色相记号（划线、空心、复写联、盖章、实心／空心圈、警示图标）。
 - **Do** 需要更强层级时调 Archivo 的 wdth 轴和字重，不新增字号档；读数破百时降一档而不是让它溢出。
 - **Do** 在每个可改的读数旁常驻"起始 N"，让人随时能系回默认值。
+- **Do** 把首页最显眼的那一段留给使用频次最高的入口（拿房间号加入），开局的列表排在它下面。
+- **Do** 只在控件自身已经有一个更准的可见焦点记号时才豁免全局焦点环——当前全站仅房间号四格（红边框即光标）。
 - **Do** 保持触控目标 ≥44px，主要操作放在下半屏。
 - **Do** 新增游戏时只覆盖 paper / rule / mark 三个 CSS 变量。
 
@@ -394,6 +440,7 @@ components:
 - **Don't** 让参照性内容默认占据半屏以上；展开态也要有高度上限。
 - **Don't** 把资源名缩成 13px 角标——它是那一行的标题，用 24px。
 - **Don't** 用尺寸宣布哪个资源或哪个按键更重要——那是填充、墨色与标注的事。
+- **Don't** 给网格里空着的那一格用 2px 石墨边——未填的格要轻于已印上内容的卡，它是 1px 发丝线。
 - **Don't** 引入第三档线宽或第三档边框粗细。
 - **Don't** 给任何元素加圆角。
 - **Don't** 用投影表达状态变化；投影只表达"一张纸压在另一张纸上"。

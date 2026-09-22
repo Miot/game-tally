@@ -13,6 +13,7 @@ related_targets: ["src/views/HomeView.vue","src/views/SettingsView.vue","src/App
 受众与任务：4–5 名围桌桌游玩家，明亮日光或白光下，手机搁在牌堆与 token 之间，每次抬眼只有一两秒。
 约束：零后端、公共 MQTT 中继、他人视角协议级只读、1–5 人、仅简体中文、GitHub Pages 静态站。
 已定边界：外壳通用 + 房间页按游戏换皮；BGG 真实封面入口保留；机器人头像与 Vant 组件层允许重做。
+首页的版面按使用频率排：一桌人里只有一个人开局，其余三四个都是拿着房间号进来的，所以「加入」占顶部最显眼的位置（四格 + 整行主键），开局的游戏列表两列铺在它下面。搜索栏用户明确不做，但「或者开一局」那行标题右侧留有空间，将来加它不必重排。
 
 ## Direction contract
 
@@ -32,3 +33,4 @@ related_targets: ["src/views/HomeView.vue","src/views/SettingsView.vue","src/App
 
 - 第二款游戏的换皮变量只留纸、格线、印记三色（代码里覆盖的是 `--color-paper` / `--color-rule` / `--color-mark`），够不够要到真的加第二款游戏时才知道。
 - 全桌折叠条默认折起，不记忆用户的展开偏好；如果实际使用中总要展开，再考虑持久化。
+- 多游戏只做到了版面：游戏网格已按列表铺开，但 gameId 还没进路由，房间页仍取 defaultGame。真加第二款时要把 gameId 带进 URL（房间 ID 本身已由 gameId 与房间码构成）。

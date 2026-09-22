@@ -146,6 +146,13 @@ body {
   outline-offset: 2px;
 }
 
+/*
+ * 房间号四格自带红边框作焦点指示，不再叠全站那圈外环 —— 两层框读起来像出错。
+ */
+.code-box:focus-visible {
+  outline: none;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
