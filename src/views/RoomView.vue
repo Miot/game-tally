@@ -6,21 +6,24 @@ import {
   useIntervalFn,
   useWakeLock,
 } from '@vueuse/core'
-import { showConfirmDialog, showToast } from 'vant'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import ColonyBoard from '@/components/ColonyBoard.vue'
 import ConnectionBadge from '@/components/ConnectionBadge.vue'
-import RoomBackdrop from '@/components/RoomBackdrop.vue'
-import PlayerChips from '@/components/PlayerChips.vue'
+import PadButton from '@/components/PadButton.vue'
+import PadIcon, { type IconName } from '@/components/PadIcon.vue'
+import PadSheet from '@/components/PadSheet.vue'
 import ProfileEditor from '@/components/ProfileEditor.vue'
 import RankSheet from '@/components/RankSheet.vue'
 import RoomQrSheet from '@/components/RoomQrSheet.vue'
+import ScorePad from '@/components/ScorePad.vue'
+import ScorePadSummary from '@/components/ScorePadSummary.vue'
+import WritePad from '@/components/WritePad.vue'
 import { defaultGame, type CounterId } from '@/games'
 import { useRoomStore } from '@/stores/room'
 import { useSettingsStore } from '@/stores/settings'
 import { createMqttTransport } from '@/sync/mqtt-transport'
+import { showConfirm, showToast } from '@/ui/feedback'
 import { isValidRoomCode, normalizeRoomCode } from '@/utils/room-code'
 
 const props = defineProps<{ code: string }>()
@@ -37,9 +40,19 @@ const showProfile = ref(false)
 const showQr = ref(false)
 const showRank = ref(false)
 const showMenu = ref(false)
+/** 全桌默认折起：记自己的分是任务，看别人是次要能力 */
+const tableOpen = ref(false)
 
 const heroCounterId = computed(() => game.counters.find((c) => c.hero)?.id ?? game.counters[0]!.id)
 const mineEliminated = computed(() => (room.me ? room.isEliminated(room.me) : false))
+
+/** 房间页按游戏定义换皮：只覆盖纸、格线、印记，其余令牌继承外壳 */
+const padTheme = computed(() => ({
+  '--color-paper': game.theme.paper,
+  '--color-rule': game.theme.rule,
+  '--color-mark': game.theme.mark,
+  '--color-mark-soft': `color-mix(in oklab, ${game.theme.mark} 12%, ${game.theme.paper})`,
+}))
 
 const { copy } = useClipboard({ legacy: true })
 const visibility = useDocumentVisibility()
@@ -55,13 +68,13 @@ async function enterRoom(): Promise<void> {
     })
   } catch (error) {
     console.error(error)
-    showToast('连接中继失败，请检查网络后重试')
+    showToast({ message: '连接中继失败，请检查网络后重试', tone: 'alert' })
   }
 }
 
 onMounted(async () => {
   if (!isValidRoomCode(code.value)) {
-    showToast('房间码无效')
+    showToast({ message: '房间号无效', tone: 'alert' })
     router.replace({ name: 'home' })
     return
   }
@@ -74,7 +87,7 @@ onMounted(async () => {
 
 async function confirmProfile(): Promise<void> {
   if (!settings.hasName) {
-    showToast('先起个昵称')
+    showToast({ message: '先写下名字', tone: 'alert' })
     return
   }
   showProfile.value = false
@@ -105,24 +118,10 @@ watch(
   },
 )
 
-/* 有玩家的殖民地覆灭时提示一次，符合游戏「某殖民地无人即结束」的规则 */
-const announced = new Set<string>()
-watch(
-  () => room.ranking.map((p) => `${p.playerId}:${room.isEliminated(p)}`),
-  () => {
-    for (const player of room.ranking) {
-      if (room.isEliminated(player) && !announced.has(player.playerId)) {
-        announced.add(player.playerId)
-        showToast({
-          message: `${player.playerId === room.myPlayerId ? '你' : player.name}的${game.elimination.label}，本局结束`,
-          duration: 3000,
-        })
-      } else if (!room.isEliminated(player)) {
-        announced.delete(player.playerId)
-      }
-    }
-  },
-)
+/*
+ * 殖民地覆灭不另做播报：计分表里那一行会被划掉并标「失败」，
+ * 本人的写字板顶部还有一条横幅。痕迹留在纸上，比一闪而过的提示可靠。
+ */
 
 function vibrate(pattern: number | number[]): void {
   if (typeof navigator.vibrate === 'function') navigator.vibrate(pattern)
@@ -138,21 +137,32 @@ function onQuick(actionId: string): void {
   vibrate(10)
 }
 
-async function copyCode(): Promise<void> {
-  await copy(code.value)
-  showToast('房间码已复制')
+function backToMine(): void {
+  if (room.myPlayerId) room.view(room.myPlayerId)
 }
 
-const menuActions = [
-  { name: '邀请同桌', id: 'invite' },
-  { name: '排行榜', id: 'rank' },
-  { name: '重新连接', id: 'reconnect' },
-  { name: '重置我的计数', id: 'reset', color: '#b45309' },
-  { name: '设置与网络诊断', id: 'settings' },
-  { name: '离开房间', id: 'leave', color: '#e11d48' },
+async function copyCode(): Promise<void> {
+  await copy(code.value)
+  showToast('房间号已复制')
+}
+
+interface MenuAction {
+  id: string
+  name: string
+  icon: IconName
+  destructive?: boolean
+}
+
+const menuActions: MenuAction[] = [
+  { id: 'invite', name: '邀请同桌', icon: 'qr' },
+  { id: 'rank', name: '合计', icon: 'rank' },
+  { id: 'reconnect', name: '重新连接', icon: 'reconnect' },
+  { id: 'reset', name: '重置我的一栏', icon: 'reset' },
+  { id: 'settings', name: '设置与连接诊断', icon: 'settings' },
+  { id: 'leave', name: '离开房间', icon: 'leave', destructive: true },
 ]
 
-async function onMenuSelect(action: { id: string }): Promise<void> {
+async function onMenuSelect(action: MenuAction): Promise<void> {
   showMenu.value = false
   switch (action.id) {
     case 'invite':
@@ -167,16 +177,16 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
       showToast('已重新连接中继')
       break
     case 'reset':
-      try {
-        await showConfirmDialog({
-          title: '重置我的计数',
-          message: '把幸存者、钱、食物恢复为开局数值，其他玩家不受影响。',
-          confirmButtonText: '重置',
+      if (
+        await showConfirm({
+          title: '重置我的一栏',
+          message: `把${game.counters.map((counter) => counter.name).join('、')}擦掉，恢复成开局数值。其他人的一栏不受影响。`,
+          confirmText: '重置',
+          destructive: true,
         })
+      ) {
         room.resetMine()
         showToast('已重置')
-      } catch {
-        // 用户取消
       }
       break
     case 'settings':
@@ -191,87 +201,110 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
 </script>
 
 <template>
-  <main class="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-3 px-4 pt-3 pb-8">
-    <RoomBackdrop />
-    <header class="flex items-center gap-2">
+  <main class="pad-page mx-auto flex min-h-dvh w-full max-w-md flex-col" :style="padTheme">
+    <!-- 计分纸表头：房间号填在这一栏，右边是中继与菜单 -->
+    <header class="rule-b flex shrink-0 items-center gap-2 px-3 py-2">
       <button
         type="button"
-        class="tap flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-ink-2"
+        class="tap flex h-10 w-10 shrink-0 items-center justify-center border-2 border-transparent text-pencil"
         aria-label="返回首页"
         @click="router.push({ name: 'home' })"
       >
-        ←
+        <span class="h-5 w-5"><PadIcon name="back" /></span>
       </button>
+
+      <span class="label-cn shrink-0 text-pencil">房间</span>
       <button
         type="button"
-        class="tap readout flex-1 rounded-full border border-line bg-surface py-2 text-center text-xl tracking-[0.3em] text-accent-deep"
+        class="tap tabular min-h-11 shrink-0 px-1 text-num-s font-bold tracking-[0.12em] text-graphite"
         data-testid="room-code"
-        aria-label="复制房间码"
+        aria-label="复制房间号"
         @click="copyCode"
       >
         {{ code }}
       </button>
-      <ConnectionBadge :status="room.status" :peer-count="room.peerCount" :relays="room.relays" />
+
       <button
         type="button"
-        class="tap flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-ink-2"
+        class="tap flex h-10 w-10 shrink-0 items-center justify-center border-2 border-transparent text-graphite"
+        aria-label="邀请同桌"
+        data-testid="invite"
+        @click="showQr = true"
+      >
+        <span class="h-5 w-5"><PadIcon name="qr" /></span>
+      </button>
+
+      <ConnectionBadge
+        class="ml-auto min-w-0 shrink"
+        :status="room.status"
+        :peer-count="room.peerCount"
+        :relays="room.relays"
+      />
+
+      <button
+        type="button"
+        class="tap flex h-10 w-10 shrink-0 items-center justify-center border-2 border-graphite text-graphite"
         aria-label="更多"
         @click="showMenu = true"
       >
-        ⋯
+        <span class="h-5 w-5"><PadIcon name="more" /></span>
       </button>
     </header>
 
-    <PlayerChips
-      v-if="room.me"
-      :players="room.orderedPlayers"
-      :active-id="room.viewingPlayerId"
-      :my-id="room.myPlayerId"
-      :hero-counter-id="heroCounterId"
-      :is-online="room.isOnline"
-      :is-eliminated="room.isEliminated"
-      @select="room.view"
-    />
+    <!--
+      任务是记自己的分，全桌是抬头一瞥的参照，所以全桌折成一行，
+      展开才铺开整张表；写字板拿走剩下的全部高度。
+    -->
+    <template v-if="room.me">
+      <ScorePadSummary
+        class="shrink-0"
+        :game="game"
+        :players="room.orderedPlayers"
+        :my-id="room.myPlayerId"
+        :hero-counter-id="heroCounterId"
+        :open="tableOpen"
+        :is-online="room.isOnline"
+        :is-eliminated="room.isEliminated"
+        @toggle="tableOpen = !tableOpen"
+      />
 
+      <div v-if="tableOpen" class="rule-b max-h-[38dvh] shrink-0 overflow-y-auto">
+        <ScorePad
+          :game="game"
+          :players="room.orderedPlayers"
+          :active-id="room.viewingPlayerId"
+          :my-id="room.myPlayerId"
+          :hero-counter-id="heroCounterId"
+          :is-online="room.isOnline"
+          :is-eliminated="room.isEliminated"
+          @select="room.view"
+        />
+      </div>
+    </template>
+
+    <!-- 还没入房：这张纸上一行都还没有，只留一个落点 -->
     <div
-      v-if="room.viewing && !room.isViewingSelf"
-      class="flex items-center justify-between rounded-xl border border-amber/40 bg-amber/10 px-3 py-2 text-xs text-amber-deep"
-      data-testid="readonly-banner"
+      v-else-if="!showProfile"
+      class="flex flex-1 flex-col items-center justify-center gap-2 px-4 text-pencil"
     >
-      <span>只读 · 正在查看 {{ room.viewing.name }} 的殖民地</span>
-      <button
-        type="button"
-        class="tap font-medium underline"
-        @click="room.myPlayerId && room.view(room.myPlayerId)"
-      >
-        回到我的
-      </button>
+      <span class="relay-breathe h-2 w-2 bg-mark" aria-hidden="true"></span>
+      <p class="text-body">正在进入房间…</p>
     </div>
 
-    <p
-      v-if="mineEliminated && room.isViewingSelf"
-      class="rounded-xl border border-alert/50 bg-alert/10 px-3 py-2 text-center text-sm text-alert"
-    >
-      你的{{ game.elimination.label }}了。按规则本局在此结束，可在排行榜查看结果。
-    </p>
-
-    <ColonyBoard
+    <WritePad
       v-if="room.viewing"
+      class="min-h-0 flex-1"
       :game="game"
       :state="room.viewing"
       :editable="room.isViewingSelf"
       :online="room.isOnline(room.viewing.playerId)"
-      :eliminated="room.isEliminated(room.viewing)"
+      :eliminated="room.isViewingSelf ? mineEliminated : room.isEliminated(room.viewing)"
       :can-undo="room.canUndo"
       @adjust="onAdjust"
       @quick="onQuick"
       @undo="room.undo"
+      @back-to-mine="backToMine"
     />
-
-    <div v-else-if="!showProfile" class="panel flex flex-col items-center gap-2 p-8 text-ink-2">
-      <span class="h-3 w-3 rounded-full bg-amber pulse" />
-      <p class="text-sm">正在进入房间…</p>
-    </div>
 
     <RoomQrSheet v-model:show="showQr" :code="code" :url="shareUrl" />
     <RankSheet
@@ -282,41 +315,38 @@ async function onMenuSelect(action: { id: string }): Promise<void> {
       :is-online="room.isOnline"
       :is-eliminated="room.isEliminated"
     />
-    <van-action-sheet
-      v-model:show="showMenu"
-      :actions="menuActions"
-      cancel-text="取消"
-      close-on-click-action
-      @select="onMenuSelect"
-    />
 
-    <van-popup
-      v-model:show="showProfile"
-      position="bottom"
-      round
-      :close-on-click-overlay="false"
-      safe-area-inset-bottom
-    >
-      <div class="px-4 pt-5 pb-6">
-        <h2 class="font-display text-sm tracking-[0.3em] text-ink-2 uppercase">
-          进入房间 {{ code }}
-        </h2>
-        <p class="mt-1 mb-4 text-xs text-ink-3">先选一个机器人并起名，同桌才认得出你。</p>
-        <ProfileEditor
-          v-model:name="settings.profile.name"
-          v-model:avatar="settings.profile.avatar"
-        />
-        <van-button
-          class="mt-4"
-          block
-          round
-          type="primary"
-          data-testid="confirm-profile"
-          @click="confirmProfile"
-        >
-          进入房间
-        </van-button>
-      </div>
-    </van-popup>
+    <PadSheet v-model:show="showMenu" title="这一局">
+      <ul class="sheet">
+        <li v-for="action in menuActions" :key="action.id" class="hair-b last:border-b-0">
+          <button
+            type="button"
+            class="tap flex min-h-14 w-full items-center gap-3 px-3 text-left text-body"
+            :class="action.destructive ? 'text-mark' : 'text-graphite'"
+            @click="onMenuSelect(action)"
+          >
+            <span class="h-5 w-5 shrink-0"><PadIcon :name="action.icon" /></span>
+            {{ action.name }}
+          </button>
+        </li>
+      </ul>
+    </PadSheet>
+
+    <PadSheet v-model:show="showProfile" :dismissible="false" :title="`进入房间 ${code}`">
+      <p class="mb-4 text-body text-pencil">领一个指示物、写下名字，同桌才认得出你这一栏。</p>
+      <ProfileEditor
+        v-model:name="settings.profile.name"
+        v-model:avatar="settings.profile.avatar"
+      />
+      <PadButton
+        class="mt-5"
+        block
+        variant="solid"
+        data-testid="confirm-profile"
+        @click="confirmProfile"
+      >
+        进入房间
+      </PadButton>
+    </PadSheet>
   </main>
 </template>

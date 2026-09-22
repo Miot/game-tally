@@ -8,15 +8,15 @@
 
 ## 使用方式
 
-1. 首页选一个机器人头像、填昵称。
+1. 首页选一个指示物、写下名字。
 2. 一人点「创建房间」，把二维码或 4 位房间码给同桌。
 3. 其他人用相机扫码打开链接，或在首页输入房间码加入。
-4. 每个人只能修改自己的计数；点上方的玩家切换条可以查看别人的分数（只读）。
-5. 「排行榜」按幸存者排序；幸存者归零即「殖民地失败」，按规则本局结束。
+4. 上半屏是全桌计分表，一眼看完所有人的数；点任意一行查看那个人的一栏（只读，显示为复写黄联）。
+5. 下半屏是自己的写字板，只有自己能写。幸存者归零即「殖民地失败」，那一行会被划掉，按规则本局结束。
 
 ## 技术栈
 
-Vue 3 · TypeScript · Vite · Pinia · Vue Router（hash 模式）· Vant 4 · Tailwind CSS 4 · MQTT.js（公共中继转发）· vite-plugin-pwa。
+Vue 3 · TypeScript · Vite · Pinia · Vue Router（hash 模式）· Tailwind CSS 4 · MQTT.js（公共中继转发）· vite-plugin-pwa。界面控件为自写，不依赖组件库；字体 Archivo Variable 自托管，中文走系统栈。
 
 设计说明与决策记录见 [docs/plan-v1.md](docs/plan-v1.md)。
 
@@ -61,10 +61,10 @@ src/
   stores/       Pinia：settings（身份与网络）、room（房间状态与同步）
   components/   计数器、殖民地面板、玩家切换条、排行榜、二维码、连接状态
   views/        首页、房间页、设置页
-  theme/        设计令牌与头像配色
+  theme/        设计令牌与玩家指示物
 tests/e2e/      Playwright
 ```
 
 ## 版权
 
-桌游资料引用自 BoardGameGeek 与 Rio Grande Games 官方页面；应用内所有图形为自绘，不使用出版社的封面与卡图。
+桌游资料引用自 BoardGameGeek 与 Rio Grande Games 官方页面。游戏封面直接引用 BGG 图片 CDN（不落库到仓库，加载失败退回自绘占位）；token 图标依据出版社官方规则书重绘为矢量，玩家指示物为自绘。

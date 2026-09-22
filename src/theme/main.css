@@ -1,62 +1,125 @@
 @import 'tailwindcss';
 
-/* 设计令牌：白色为主的科技感控制台 */
+/*
+ * Archivo 可变字体，wght 100–900 与 wdth 62–125 双轴 —— 全站层级靠这两个轴造，
+ * 因此不降级为单轴（单轴省 54KB，但预印标签的窄与标题的宽都会消失）。
+ * 中文不下载任何字体，走系统栈。
+ */
+@font-face {
+  font-family: 'Archivo Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  src: url('@archivo/archivo-latin-standard-normal.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/*
+ * 设计令牌：桌游盒里那本预印计分纸。
+ *
+ * 纪律（全站不得突破）：
+ *   线宽只有两档 —— 发丝格线 1px rule、粗规则线 2px graphite。
+ *   文本只有三档 —— label 11 / body 14 / lead 20，层级差靠 Archivo 的 wdth 轴与字重补足。
+ *   数字只有三档 —— 24 / 40 / 64，一律等宽制表。
+ *   圆角为零。纸是裁切的，不是打磨的。
+ *
+ * paper / rule / mark 三个变量是换皮接口：房间页按游戏定义在根元素上覆盖，
+ * 其余界面用默认值，因此新增游戏不必碰任何组件。
+ */
 @theme {
-  --color-canvas: #f5f7fb;
-  --color-surface: #ffffff;
-  --color-surface-2: #eef2f8;
-  --color-line: #dde4ee;
-  --color-ink: #0b1220;
-  --color-ink-2: #5b6779;
-  --color-ink-3: #8a94a6;
-  --color-accent: #0ea5e9;
-  --color-accent-deep: #0369a1;
-  --color-alert: #e11d48;
-  --color-amber: #f59e0b;
-  --color-amber-deep: #b45309;
-  --color-mint: #10b981;
-  --color-mint-deep: #047857;
+  /* 纸 */
+  --color-paper: #f7f7f5;
+  --color-paper-2: #edece7;
+  --color-paper-3: #e2e0d9;
+  /* 桌面：纸铺在上面的那张桌子 */
+  --color-desk: #d6d4cc;
+  /* NCR 复写黄联：他人视角的只读副本 */
+  --color-carbon: #f4e8b4;
+  --color-carbon-2: #e8d992;
+  --color-carbon-line: #cbb469;
+  /* 复写出来的字比原件淡而发灰，读数在黄联上用这支碳墨（5.66:1） */
+  --color-carbon-ink: #5f5949;
 
-  --font-display: 'Orbitron Variable', ui-monospace, monospace;
+  /* 线 */
+  --color-rule: #b4c8d6;
+
+  /* 墨 */
+  --color-graphite: #22201e;
+  --color-pencil: #6f6c64;
+  --color-pencil-light: #8f8b82;
+  --color-mark: #c8102e;
+  --color-mark-soft: #f6dee2;
+
+  /* 一套面，中文自动回落系统字体 */
   --font-sans:
-    system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC',
-    'Microsoft YaHei', sans-serif;
+    'Archivo Variable', system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB',
+    'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
 
-  --shadow-glow-accent: 0 0 0 3px rgba(14, 165, 233, 0.18), 0 8px 24px rgba(14, 165, 233, 0.25);
-  --shadow-glow-alert: 0 0 0 3px rgba(225, 29, 72, 0.16), 0 8px 24px rgba(225, 29, 72, 0.22);
-  --shadow-card: 0 1px 2px rgba(11, 18, 32, 0.04), 0 12px 32px rgba(11, 18, 32, 0.08);
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.1;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.5;
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.15;
+  --text-num-s: 1.5rem;
+  --text-num-s--line-height: 1;
+  --text-num-m: 2.5rem;
+  --text-num-m--line-height: 1;
+  --text-num-l: 4rem;
+  --text-num-l--line-height: 1;
+
+  /* 纸是平的。唯一的投影来自压在计分表上方的写字板。 */
+  --shadow-board: 0 -10px 28px -12px rgba(34, 32, 30, 0.28);
+  --shadow-lift: 0 6px 20px -8px rgba(34, 32, 30, 0.32);
+
+  --radius-none: 0px;
 }
 
 :root {
+  /* 全桌表展开时每一行的高度，同时是它的触控高度 */
+  --pad-row: 2.875rem;
   color-scheme: light;
+  accent-color: var(--color-mark);
+  caret-color: var(--color-graphite);
+}
+
+html {
+  background-color: var(--color-paper);
+}
+
+/*
+ * 一页纸。手机上它铺满屏幕，桌面上它是摊在桌子上的一张纸，有裁切边和投影。
+ * 纸纤维随纸走，不铺到桌面上。
+ */
+.pad-page {
+  background-color: var(--color-paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23f)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+@media (min-width: 768px) {
+  html {
+    background-color: var(--color-desk);
+  }
+  .pad-page {
+    border-inline: 2px solid var(--color-graphite);
+    box-shadow: var(--shadow-lift);
+  }
 }
 
 html,
 body {
   margin: 0;
   min-height: 100%;
-  color: var(--color-ink);
+  color: var(--color-graphite);
   font-family: var(--font-sans);
+  font-size: var(--text-body);
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   overscroll-behavior-y: none;
-}
-
-/*
- * 装饰背景放在 html 上，使其绘制在画布层，
- * 这样房间页固定定位、负 z-index 的游戏背景能覆盖网格又位于内容之下。
- */
-html {
-  background-color: var(--color-canvas);
-  background-image:
-    radial-gradient(900px 420px at 50% -160px, rgba(14, 165, 233, 0.16), transparent 65%),
-    linear-gradient(to right, rgba(11, 18, 32, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(11, 18, 32, 0.035) 1px, transparent 1px);
-  background-size:
-    auto,
-    28px 28px,
-    28px 28px;
-  background-attachment: fixed;
 }
 
 .app-shell {
@@ -65,138 +128,224 @@ html {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 通用面板：白底、细边框、柔和投影 */
-.panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-  border-radius: 1rem;
-  box-shadow: var(--shadow-card);
+/* ---------- 浏览器自带表面：这些也属于这套设计 ---------- */
+
+::selection {
+  background: var(--color-mark);
+  color: var(--color-paper);
 }
 
-/* 读数：几何显示字体 + 等宽数字 */
-.readout {
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
-  line-height: 1;
+:focus-visible {
+  outline: 2px solid var(--color-graphite);
+  outline-offset: 2px;
 }
 
-/* 触控按钮：不小于 44px，按下有明确反馈 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper-2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-pencil-light);
+  border: 2px solid var(--color-paper-2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-pencil);
+}
+
+* {
+  scrollbar-color: var(--color-pencil-light) var(--color-paper-2);
+  scrollbar-width: thin;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+/* ---------- 排版原语 ---------- */
+
+/* 预印标签：小、大写、拉开字距、稍窄。计分纸上的列头就是这么印的。 */
+.label {
+  font-size: var(--text-label);
+  font-weight: 650;
+  font-stretch: 88%;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+/* 中文标签不做大写与宽字距，否则会散架 */
+.label-cn {
+  font-size: var(--text-label);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+/* 印刷小标题：靠 wdth 轴加宽取得存在感，不新增字号档 */
+.lead {
+  font-size: var(--text-lead);
+  font-weight: 800;
+  font-stretch: 108%;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+/* 所有数字都是格子里的数字：等宽、不随字形跳动 */
+.tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.02em;
+  font-stretch: 96%;
+}
+
+/* ---------- 纸与线 ---------- */
+
+.sheet {
+  background-color: var(--color-paper);
+  border: 2px solid var(--color-graphite);
+}
+
+/* 发丝格线：预印的青蓝，永远 1px */
+.hair-b {
+  border-bottom: 1px solid var(--color-rule);
+}
+.hair-t {
+  border-top: 1px solid var(--color-rule);
+}
+.hair-r {
+  border-right: 1px solid var(--color-rule);
+}
+
+/* 计分表的一行 */
+.pad-row {
+  min-height: var(--pad-row);
+}
+
+/* 粗规则线：石墨，永远 2px，用于表头下与合计上 */
+.rule-b {
+  border-bottom: 2px solid var(--color-graphite);
+}
+.rule-t {
+  border-top: 2px solid var(--color-graphite);
+}
+
+/* ---------- 触控 ---------- */
+
 .tap {
   user-select: none;
   touch-action: manipulation;
   transition:
-    transform 80ms ease,
-    background-color 120ms ease,
-    box-shadow 120ms ease;
+    background-color 90ms linear,
+    color 90ms linear,
+    border-color 90ms linear;
 }
-.tap:active {
-  transform: scale(0.94);
+.tap:active:not(:disabled) {
+  background-color: var(--color-graphite);
+  color: var(--color-paper);
+  border-color: var(--color-graphite);
+}
+/* 实心压印块按下时反白，像活字被压进纸里又抬起 */
+.tap-solid:active:not(:disabled) {
+  background-color: var(--color-paper);
+  color: var(--color-graphite);
 }
 .tap:disabled {
-  opacity: 0.35;
-  transform: none;
+  color: var(--color-pencil-light);
+  border-color: var(--color-paper-3);
+  background-color: var(--color-paper-2);
+  cursor: not-allowed;
 }
 
-/* 计数变化时卡片整体闪一下：底色、描边、投影同时变化，确保在黑底上也看得见 */
-@keyframes flash-alert {
-  0% {
-    box-shadow: var(--shadow-glow-alert);
-    border-color: var(--color-alert);
-    background-color: color-mix(in oklab, var(--color-alert) 12%, var(--color-surface));
-  }
-  100% {
-    box-shadow: var(--shadow-card);
-    border-color: var(--color-line);
-    background-color: var(--color-surface);
-  }
+/*
+ * 行动键是一枚印章。按下的瞬间墨色灌满整个框、纸面被压下一点；
+ * 松手后墨迹慢慢渗进纸里，只留下印框。
+ *
+ * 压下要快，渗回可以慢 —— 慢的那一半不挡任何操作，它是「这笔已经落纸」的证据。
+ * 同一时刻读数在 ink-set 里落定、nib-stroke 从格底划过，三者是一次完整的盖章记账。
+ */
+.tap-stamp {
+  user-select: none;
+  touch-action: manipulation;
+  transition:
+    background-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 90ms ease-out;
 }
-@keyframes flash-gain {
-  0% {
-    box-shadow: var(--shadow-glow-accent);
-    border-color: var(--color-accent);
-    background-color: color-mix(in oklab, var(--color-accent) 12%, var(--color-surface));
-  }
-  100% {
-    box-shadow: var(--shadow-card);
-    border-color: var(--color-line);
-    background-color: var(--color-surface);
-  }
+.tap-stamp:active:not(:disabled) {
+  background-color: var(--key-ink);
+  color: var(--color-paper);
+  transform: translateY(1px);
+  transition-duration: 40ms;
 }
-.flash-alert {
-  animation: flash-alert 520ms ease-out;
-}
-.flash-gain {
-  animation: flash-gain 520ms ease-out;
+.tap-stamp:disabled {
+  color: var(--color-pencil-light);
+  border-color: var(--color-paper-3);
+  background-color: var(--color-paper-2);
+  cursor: not-allowed;
 }
 
-/* 读数弹跳：增加时上扬，减少时下沉，方向本身也是反馈 */
-@keyframes pop-up {
+/* ---------- 签名交互：格内墨迹写入 + 页边铅笔痕 ---------- */
+
+/*
+ * 写入：新数字像被压印上去 —— 墨色先浅后实，向下沉 2px 落定。
+ * 起点是可见状态，不是从无到有，因此读数在任何一帧都读得出。
+ */
+@keyframes ink-set {
   0% {
-    transform: translateY(0.45rem) scale(0.9);
-  }
-  45% {
-    transform: translateY(-0.12rem) scale(1.12);
+    opacity: 0.4;
+    transform: translateY(-2px);
   }
   100% {
+    opacity: 1;
     transform: none;
   }
 }
-@keyframes pop-down {
+.ink-set {
+  animation: ink-set 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 笔尖划过格底留下的一道印记，随写入一次性扫过 */
+@keyframes nib-stroke {
   0% {
-    transform: translateY(-0.45rem) scale(0.9);
+    transform: scaleX(0);
+    opacity: 1;
   }
-  45% {
-    transform: translateY(0.12rem) scale(1.12);
+  70% {
+    transform: scaleX(1);
+    opacity: 1;
   }
   100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+.nib-stroke {
+  transform-origin: left center;
+  animation: nib-stroke 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 页边铅笔痕：淡入后留在版面上，直到被更新的痕迹挤出 */
+@keyframes pencil-in {
+  from {
+    opacity: 0;
+    transform: translateX(-3px);
+  }
+  to {
+    opacity: 1;
     transform: none;
   }
 }
-.pop-up {
-  animation: pop-up 420ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.pop-down {
-  animation: pop-down 420ms cubic-bezier(0.22, 1, 0.36, 1);
+.pencil-in {
+  animation: pencil-in 200ms ease-out;
 }
 
-/* 增量气泡：从读数旁浮出并淡去，点了几下、加减多少一目了然 */
-@keyframes bubble-rise {
-  0% {
-    opacity: 0;
-    transform: translateY(0.5rem) scale(0.8);
-  }
-  22% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-1.7rem) scale(1);
-  }
-}
-@keyframes bubble-sink {
-  0% {
-    opacity: 0;
-    transform: translateY(-0.5rem) scale(0.8);
-  }
-  22% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(1.7rem) scale(1);
-  }
-}
-.bubble-rise {
-  animation: bubble-rise 700ms ease-out forwards;
-}
-.bubble-sink {
-  animation: bubble-sink 700ms ease-out forwards;
-}
-
-@keyframes pulse-dot {
+/* 中继心跳：连接中的空心圈缓慢呼吸 */
+@keyframes relay-breathe {
   0%,
   100% {
     opacity: 1;
@@ -205,6 +354,28 @@ html {
     opacity: 0.35;
   }
 }
-.pulse {
-  animation: pulse-dot 1.2s ease-in-out infinite;
+.relay-breathe {
+  animation: relay-breathe 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 盖章仍要看得见落没落，所以留住墨色变化，只收掉压下的位移 */
+  .tap-stamp {
+    transition-duration: 80ms;
+  }
+  .tap-stamp:active:not(:disabled) {
+    transform: none;
+    transition-duration: 40ms;
+  }
+  .ink-set,
+  .nib-stroke,
+  .pencil-in,
+  .relay-breathe {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+  .ink-set,
+  .pencil-in {
+    animation-name: none;
+  }
 }

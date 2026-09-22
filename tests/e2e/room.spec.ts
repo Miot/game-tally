@@ -52,7 +52,39 @@ test.describe('房间流程', () => {
     await page.getByTestId('confirm-profile').click()
     await expect(page.getByTestId('room-code')).toHaveText('K7PQ')
     await expect(page.getByTestId('counter-survivors-value')).toHaveText('30')
+
+    // 全桌默认折起，只有一个人时摘要条直说；展开后表里就自己一行
+    await expect(page.getByTestId('table-summary')).toContainText('只有你一个人')
+    await expect(page.getByTestId(/^chip-/)).toHaveCount(0)
+    await page.getByTestId('table-summary').click()
     await expect(page.getByTestId(/^chip-/)).toHaveCount(1)
+  })
+
+  test('幸存者归零即出局，整行标记并结束本局', async ({ page }) => {
+    await page.goto('./#/r/M4TZ')
+    await page.getByPlaceholder('你的昵称').fill('末人')
+    await page.getByTestId('confirm-profile').click()
+
+    const survivors = page.getByTestId('counter-survivors-value')
+    await expect(survivors).toHaveText('30')
+    // 起始 30，减六次 5 恰好归零
+    for (let i = 0; i < 6; i += 1) {
+      await page.getByTestId('counter-survivors-dec-5').click()
+    }
+    await expect(survivors).toHaveText('0')
+
+    // 到达下限后不能再减
+    await expect(page.getByTestId('counter-survivors-dec-5')).toBeDisabled()
+    await expect(page.getByTestId('counter-survivors-dec-1')).toBeDisabled()
+
+    // 折叠状态下摘要条也必须把「本局结束」说出来，不能因为折起就丢掉规则信息
+    await expect(page.getByTestId('table-summary')).toContainText('殖民地失败')
+    await expect(page.getByTestId('table-summary')).toContainText('本局结束')
+
+    // 展开后那一行标记为出局，写字板给出本局结束的说明
+    await page.getByTestId('table-summary').click()
+    await expect(page.getByTestId(/^chip-/).first()).toHaveAttribute('aria-label', /殖民地失败/)
+    await expect(page.getByText('按规则本局在此结束')).toBeVisible()
   })
 
   test('无效房间码回到首页', async ({ page }) => {

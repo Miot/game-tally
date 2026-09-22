@@ -46,6 +46,20 @@ export interface EliminationRule {
   label: string
 }
 
+/**
+ * 房间页的换皮接口。
+ * 只覆盖纸、格线、印记三色，其余令牌继承外壳，因此新增游戏不必触碰任何组件。
+ * 三个值都会作为 CSS 变量写在房间根元素上，Tailwind 的 paper/rule/mark 工具类随之级联。
+ */
+export interface GameTheme {
+  /** 纸色，必须足够浅：使用场景是明亮日光下的桌边 */
+  paper: string
+  /** 预印发丝格线色 */
+  rule: string
+  /** 印记色，用于表头条、当前行标记与合计线，需在纸色上不低于 4.5:1 */
+  mark: string
+}
+
 export interface GameDefinition {
   id: string
   name: { zh: string; en: string }
@@ -63,4 +77,5 @@ export interface GameDefinition {
   quickActions: readonly QuickActionDefinition[]
   ranking: { counterId: CounterId; order: 'desc' | 'asc' }
   elimination: EliminationRule
+  theme: GameTheme
 }

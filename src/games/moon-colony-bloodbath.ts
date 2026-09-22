@@ -69,4 +69,6 @@ export const moonColonyBloodbath: GameDefinition = {
   ],
   ranking: { counterId: 'survivors', order: 'desc' },
   elimination: { counterId: 'survivors', atOrBelow: 0, label: '殖民地失败' },
+  /* 月面任务记录表：纸偏冷灰，印记取封面的深印刷红 */
+  theme: { paper: '#f5f6f4', rule: '#aebfcc', mark: '#b3121f' },
 }

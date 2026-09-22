@@ -9,7 +9,7 @@ import { createPlayerId } from '@/utils/id'
 export interface Profile {
   playerId: string
   name: string
-  /** 机器人头像配色索引，见 theme/avatars.ts */
+  /** 玩家指示物索引，见 theme/markers.ts；字段名沿用 avatar 以兼容已存档案与同步协议 */
   avatar: number
 }
 

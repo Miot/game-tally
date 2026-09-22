@@ -1,0 +1,823 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-21T00:00:00Z",
+  "title": "Design System: 局分 GameTally",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "冷白胶版纸",
+        "canonical": "#f7f7f5",
+        "notes": "主纸面，叠 4% 分形噪声纤维；房间页可被游戏定义覆盖。",
+        "tonalRamp": [
+          "#26261f",
+          "#3d3c33",
+          "#5a584c",
+          "#7a776a",
+          "#9c988a",
+          "#bfbcaf",
+          "#dedbd2",
+          "#f7f7f5"
+        ]
+      },
+      "paper-2": {
+        "role": "neutral",
+        "displayName": "纸二",
+        "canonical": "#edece7",
+        "notes": "全桌折叠条的常态底。",
+        "tonalRamp": [
+          "#242319",
+          "#3a382d",
+          "#565344",
+          "#757262",
+          "#979386",
+          "#bab7ac",
+          "#d7d5cd",
+          "#edece7"
+        ]
+      },
+      "paper-3": {
+        "role": "neutral",
+        "displayName": "纸三（当前行）",
+        "canonical": "#e2e0d9",
+        "notes": "展开表里当前查看行的行底色。",
+        "tonalRamp": [
+          "#22211a",
+          "#37352c",
+          "#525044",
+          "#716e61",
+          "#938f83",
+          "#b5b2a8",
+          "#d0cdc4",
+          "#e2e0d9"
+        ]
+      },
+      "desk": {
+        "role": "neutral",
+        "displayName": "桌面",
+        "canonical": "#d6d4cc",
+        "notes": "≥768px 时纸背后的桌子。",
+        "tonalRamp": [
+          "#201f18",
+          "#34322a",
+          "#4e4c41",
+          "#6c6a5e",
+          "#8d8a7e",
+          "#aeaba0",
+          "#c6c3ba",
+          "#d6d4cc"
+        ]
+      },
+      "carbon": {
+        "role": "tertiary",
+        "displayName": "NCR 复写黄联",
+        "canonical": "#f4e8b4",
+        "notes": "他人视角的只读副本纸。",
+        "tonalRamp": [
+          "#2a2408",
+          "#453c11",
+          "#63571d",
+          "#84762c",
+          "#a6963f",
+          "#c7b866",
+          "#e0d494",
+          "#f4e8b4"
+        ]
+      },
+      "carbon-2": {
+        "role": "tertiary",
+        "displayName": "黄联深调",
+        "canonical": "#e8d992",
+        "tonalRamp": [
+          "#282108",
+          "#423810",
+          "#5f521a",
+          "#7f7029",
+          "#a08f3c",
+          "#c0b062",
+          "#d7c87d",
+          "#e8d992"
+        ]
+      },
+      "carbon-line": {
+        "role": "tertiary",
+        "displayName": "黄联格线",
+        "canonical": "#cbb469",
+        "notes": "黄联上取代 rule 的发丝线色。",
+        "tonalRamp": [
+          "#231c07",
+          "#3b300f",
+          "#554719",
+          "#725f27",
+          "#907a38",
+          "#ae9750",
+          "#bda65c",
+          "#cbb469"
+        ]
+      },
+      "carbon-ink": {
+        "role": "tertiary",
+        "displayName": "碳墨",
+        "canonical": "#5f5949",
+        "notes": "复写出来的字比原件淡而发灰；黄联上读数用它，实测 5.66:1。",
+        "tonalRamp": [
+          "#1c1a15",
+          "#2c2922",
+          "#3d3930",
+          "#4e493c",
+          "#5f5949",
+          "#87806c",
+          "#b0a992",
+          "#d8d3c2"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "青蓝发丝格线",
+        "canonical": "#b4c8d6",
+        "notes": "预印格线，永远 1px；房间页可被游戏定义覆盖。",
+        "tonalRamp": [
+          "#141f27",
+          "#20323e",
+          "#2f4859",
+          "#426076",
+          "#5a7d94",
+          "#7c9db2",
+          "#9ab5c7",
+          "#b4c8d6"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "石墨",
+        "canonical": "#22201e",
+        "notes": "正文、读数、2px 粗规则线、实心压印块。手写的那支笔只有这一支。",
+        "tonalRamp": [
+          "#22201e",
+          "#3a3733",
+          "#54504a",
+          "#706b63",
+          "#8f8a80",
+          "#b0aba1",
+          "#d2cec6",
+          "#f0eeea"
+        ]
+      },
+      "pencil": {
+        "role": "neutral",
+        "displayName": "铅笔灰",
+        "canonical": "#6f6c64",
+        "notes": "次要文本与离线读数，实测 4.87:1。",
+        "tonalRamp": [
+          "#1e1d1a",
+          "#2f2e2a",
+          "#42403b",
+          "#55534d",
+          "#6f6c64",
+          "#928f86",
+          "#b5b2a9",
+          "#d9d6ce"
+        ]
+      },
+      "pencil-light": {
+        "role": "neutral",
+        "displayName": "淡铅笔",
+        "canonical": "#8f8b82",
+        "notes": "页边痕迹与禁用态，不用于正文。",
+        "tonalRamp": [
+          "#232220",
+          "#37352f",
+          "#4d4a43",
+          "#656158",
+          "#7d796f",
+          "#8f8b82",
+          "#b4b0a7",
+          "#d8d5ce"
+        ]
+      },
+      "mark": {
+        "role": "primary",
+        "displayName": "印刷红",
+        "canonical": "#c8102e",
+        "notes": "套印色，实测 5.47:1。用于展开表的表头条、我那一行的常驻标记、合计收尾线、出局横线，以及折叠条上的出局警示；房间页可被游戏定义覆盖。",
+        "tonalRamp": [
+          "#2a0309",
+          "#470610",
+          "#680a18",
+          "#8c0d20",
+          "#af1028",
+          "#c8102e",
+          "#e8455e",
+          "#f79aa8"
+        ]
+      },
+      "mark-soft": {
+        "role": "primary",
+        "displayName": "红晕纸",
+        "canonical": "#f6dee2",
+        "notes": "终局时整条折叠条的底色，以及写字板上的出局提示条；房间页由 color-mix(in oklab, mark 12%, paper) 派生。",
+        "tonalRamp": [
+          "#2c1519",
+          "#472026",
+          "#652d35",
+          "#873c46",
+          "#a85a64",
+          "#c98891",
+          "#e4b7bd",
+          "#f6dee2"
+        ]
+      },
+      "marker-ink-blue": {
+        "role": "secondary",
+        "displayName": "墨蓝（圆盘）",
+        "canonical": "#14538d",
+        "tonalRamp": [
+          "#04121f",
+          "#071f36",
+          "#0b2f51",
+          "#0f416e",
+          "#14538d",
+          "#2a76bd",
+          "#63a1d8",
+          "#a8caea"
+        ]
+      },
+      "marker-ink-red": {
+        "role": "secondary",
+        "displayName": "朱红（方块）",
+        "canonical": "#a6242b",
+        "tonalRamp": [
+          "#210608",
+          "#380a0d",
+          "#521014",
+          "#6f171c",
+          "#8d1d24",
+          "#a6242b",
+          "#d24d54",
+          "#eda1a5"
+        ]
+      },
+      "marker-ink-green": {
+        "role": "secondary",
+        "displayName": "森绿（三角）",
+        "canonical": "#1f6b45",
+        "tonalRamp": [
+          "#06170f",
+          "#0a2719",
+          "#103a26",
+          "#164e33",
+          "#1f6b45",
+          "#2d9463",
+          "#57bd8c",
+          "#9ddcbd"
+        ]
+      },
+      "marker-ink-ochre": {
+        "role": "secondary",
+        "displayName": "赭黄（菱形）",
+        "canonical": "#8a5a12",
+        "tonalRamp": [
+          "#1d1204",
+          "#301e07",
+          "#462c0b",
+          "#5f3c0e",
+          "#8a5a12",
+          "#b57a20",
+          "#d9a24c",
+          "#eecc95"
+        ]
+      },
+      "marker-ink-violet": {
+        "role": "secondary",
+        "displayName": "紫罗兰（五边）",
+        "canonical": "#5b3a8e",
+        "tonalRamp": [
+          "#140c20",
+          "#211435",
+          "#31204d",
+          "#432b68",
+          "#5b3a8e",
+          "#7b55b4",
+          "#a184d0",
+          "#cdbbe6"
+        ]
+      },
+      "marker-ink-teal": {
+        "role": "secondary",
+        "displayName": "孔雀（六边）",
+        "canonical": "#0f6b6b",
+        "tonalRamp": [
+          "#041818",
+          "#072828",
+          "#0a3c3c",
+          "#0d5252",
+          "#0f6b6b",
+          "#159494",
+          "#43bcbc",
+          "#96dcdc"
+        ]
+      },
+      "marker-ink-magenta": {
+        "role": "secondary",
+        "displayName": "洋红（星）",
+        "canonical": "#93286b",
+        "tonalRamp": [
+          "#1e0715",
+          "#320c23",
+          "#4a1133",
+          "#651846",
+          "#93286b",
+          "#bb3f8c",
+          "#d573b0",
+          "#ebb4d4"
+        ]
+      },
+      "marker-ink-slate": {
+        "role": "secondary",
+        "displayName": "石板（十字）",
+        "canonical": "#3f4a55",
+        "tonalRamp": [
+          "#101316",
+          "#1c2126",
+          "#2a3139",
+          "#3f4a55",
+          "#5b6b7a",
+          "#7f8f9e",
+          "#a8b4bf",
+          "#d3dae0"
+        ]
+      },
+      "resource-ink-blue": {
+        "role": "secondary",
+        "displayName": "幸存者蓝（资源身份色）",
+        "canonical": "#1d4ed8",
+        "notes": "由游戏定义提供。只出现在这支资源自己的卡片里：名称块、两枚主步进键、读数正下方那个只作用于本资源的快捷行动（同色空心框）。绝不用于读数。",
+        "tonalRamp": [
+          "#060f2b",
+          "#0a1a49",
+          "#0f256d",
+          "#153292",
+          "#1d4ed8",
+          "#4a76e8",
+          "#87a5f1",
+          "#c3d2f8"
+        ]
+      },
+      "resource-ink-amber": {
+        "role": "secondary",
+        "displayName": "钱琥珀（资源身份色）",
+        "canonical": "#b45309",
+        "notes": "由游戏定义提供。同资源身份色用法（名称块 / 主步进键 / 本资源的快捷行动）。",
+        "tonalRamp": [
+          "#241004",
+          "#3d1c05",
+          "#5a2a07",
+          "#7b3a08",
+          "#b45309",
+          "#d9782a",
+          "#eba763",
+          "#f7d5a8"
+        ]
+      },
+      "resource-ink-green": {
+        "role": "secondary",
+        "displayName": "食物绿（资源身份色）",
+        "canonical": "#15803d",
+        "notes": "由游戏定义提供。同资源身份色用法（名称块 / 主步进键 / 本资源的快捷行动）。",
+        "tonalRamp": [
+          "#04180b",
+          "#072814",
+          "#0b3e1e",
+          "#0f5a2b",
+          "#15803d",
+          "#22a955",
+          "#54cb82",
+          "#a2e6bd"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "lead": {
+        "displayName": "印刷小标题",
+        "purpose": "页面级标题与区块小标题，以及写字板上的资源名称块（资源名是那一行的标题，不是角标）；靠 wdth 108% 取得存在感，不新增字号档。"
+      },
+      "body": {
+        "displayName": "正文",
+        "purpose": "正文、玩家名、副步进键上的 ±N。"
+      },
+      "label": {
+        "displayName": "拉丁预印标签",
+        "purpose": "大写 + 0.14em 字距 + wdth 88%，仅用于拉丁文列头与商标行。"
+      },
+      "label-cn": {
+        "displayName": "中文预印标签",
+        "purpose": "列头、区块名、折叠条文字、按钮文字；不大写、不宽字距，否则会散架。"
+      },
+      "num-s": {
+        "displayName": "表格读数",
+        "purpose": "展开表内的主资源读数、房间码，以及实心压印键上的步进数字。"
+      },
+      "num-m": {
+        "displayName": "中档读数",
+        "purpose": "折叠条上的领先值，以及写字板读数破百（≥100）后降下来的那一档。"
+      },
+      "num-l": {
+        "displayName": "主读数",
+        "purpose": "写字板上三个资源的常规读数，桌边远距离扫视用。"
+      }
+    },
+    "layoutWeighting": {
+      "principle": "版面按任务分配高度，不按信息量。",
+      "roomPage": [
+        {
+          "band": "header",
+          "sizing": "shrink-0",
+          "notes": "房间码、常驻的邀请图标键、中继记号、菜单；2px 石墨规则线收底。"
+        },
+        {
+          "band": "score-pad-summary",
+          "sizing": "shrink-0，约 48px",
+          "notes": "全桌折叠条，默认收起。"
+        },
+        {
+          "band": "score-pad",
+          "sizing": "shrink-0，max-height 38dvh，可滚动",
+          "notes": "仅展开时存在；2px 石墨规则线收底。"
+        },
+        {
+          "band": "write-pad",
+          "sizing": "min-h-0 flex-1",
+          "notes": "拿走全部剩余高度。"
+        }
+      ],
+      "writePad": [
+        {
+          "band": "header",
+          "sizing": "shrink-0"
+        },
+        {
+          "band": "eliminated-notice",
+          "sizing": "shrink-0",
+          "notes": "仅出局时存在。"
+        },
+        {
+          "band": "counter-row ×N",
+          "sizing": "min-h-0 flex-1 等分",
+          "notes": "三个资源等高等大，长出来的空间归它们。"
+        },
+        {
+          "band": "quick-actions",
+          "sizing": "shrink-0，min-height 48px"
+        }
+      ]
+    },
+    "shadows": [
+      {
+        "name": "board",
+        "value": "0 -10px 28px -12px rgba(34, 32, 30, 0.28)",
+        "purpose": "写字板向上投在上方内容上的影，全站唯一常驻投影。"
+      },
+      {
+        "name": "lift",
+        "value": "0 6px 20px -8px rgba(34, 32, 30, 0.32)",
+        "purpose": "桌面视图中整张纸落在桌上的影，以及便条／确认便签这类临时压在页面上的纸片。"
+      }
+    ],
+    "motion": [
+      {
+        "name": "ink-set",
+        "value": "ink-set 150ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "格内墨迹落定：从 40% 不透明、上移 2px 落到实处。起点是可见状态，读数在任何一帧都读得出。"
+      },
+      {
+        "name": "nib-stroke",
+        "value": "nib-stroke 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "purpose": "笔尖划过格底的一道印刷红横线，随写入一次性由左扫过后消失。"
+      },
+      {
+        "name": "pencil-in",
+        "value": "pencil-in 200ms ease-out",
+        "purpose": "页边铅笔痕淡入；每个资源行留最近 3 道，直到被更新的痕迹挤出，换人清空。"
+      },
+      {
+        "name": "relay-breathe",
+        "value": "relay-breathe 1.4s ease-in-out infinite",
+        "purpose": "连接中的空心中继圈缓慢呼吸。"
+      },
+      {
+        "name": "tap",
+        "value": "background-color 90ms linear, color 90ms linear, border-color 90ms linear",
+        "purpose": "按下反白，像活字被压进纸里又抬起。"
+      },
+      {
+        "name": "stamp",
+        "value": "background-color 260ms cubic-bezier(0.16, 1, 0.3, 1), color 260ms cubic-bezier(0.16, 1, 0.3, 1), transform 90ms ease-out（按下时三者收到 40ms）",
+        "purpose": "行动键的焦点时刻。按下的瞬间墨色灌满印框、纸面下沉 1px；松手后墨迹用 260ms 渗回纸里，只留印框。压下快、渗回慢——慢的那一半不挡操作，是「这笔已落纸」的证据。与 ink-set / nib-stroke / pencil-in 同时发生，合成这套界面唯一一处被编排过的时刻。降低动效偏好下保留墨色变化，只去掉位移。"
+      },
+      {
+        "name": "chevron-flip",
+        "value": "transition-transform + rotate(180deg)",
+        "purpose": "全桌折叠条的 V 形角标翻转；展开／收起不换图标、不投影。"
+      },
+      {
+        "name": "sheet-slide",
+        "value": "transform 220ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "底部抽出的一联纸上滑；只平移，不缩放不弹跳。"
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media (prefers-reduced-motion: reduce) { animation-duration: 1ms; ink-set/pencil-in animation-name: none }",
+        "purpose": "全部签名动效在减弱动效下降级或取消。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "desk",
+        "value": "768px",
+        "notes": "以上时纸背后露出桌面色，纸的左右加 2px 石墨裁切边并落 lift 投影。"
+      },
+      {
+        "name": "page-max",
+        "value": "28rem",
+        "notes": "纸的最大宽度，始终居中单列。"
+      },
+      {
+        "name": "table-max",
+        "value": "38dvh",
+        "notes": "全桌表展开后的高度上限，超出内部滚动。"
+      }
+    ],
+    "reskin": {
+      "variables": [
+        "--color-paper",
+        "--color-rule",
+        "--color-mark"
+      ],
+      "derived": {
+        "--color-mark-soft": "color-mix(in oklab, var(--color-mark) 12%, var(--color-paper))"
+      },
+      "appliedOn": "房间页根元素（RoomView 的 padTheme）",
+      "notes": "换皮只允许这三个变量，新增游戏不得触碰任何组件。《月球殖民地》为 paper #f5f6f4 / rule #aebfcc / mark #b3121f。"
+    },
+    "iconography": {
+      "viewBox": "0 0 24 24",
+      "strokeWidth": 1.75,
+      "linecap": "round",
+      "linejoin": "round",
+      "fill": "none",
+      "stroke": "currentColor",
+      "notes": "全站图标只从单一图标组件出，不使用 Unicode 字形、emoji 或图标字体。展开／收起共用 expand 一枚 V 形角标，靠 rotate-180 翻转。"
+    },
+    "playerMarkers": {
+      "encoding": "形状 + 油墨色双重编码，任一单独都足以区分玩家",
+      "shapes": [
+        "disc",
+        "square",
+        "triangle",
+        "diamond",
+        "pentagon",
+        "hexagon",
+        "star",
+        "cross"
+      ],
+      "offlineTreatment": "同一形状改画成 fill:none + 2.4px 描边的空心版本，opacity 0.7"
+    },
+    "contrast": [
+      {
+        "pair": "pencil #6f6c64 on paper",
+        "ratio": "4.87:1"
+      },
+      {
+        "pair": "mark #c8102e on paper",
+        "ratio": "5.47:1"
+      },
+      {
+        "pair": "carbon-ink #5f5949 on carbon",
+        "ratio": "5.66:1"
+      },
+      {
+        "pair": "资源色 on paper",
+        "ratio": "4.66–6.22:1"
+      },
+      {
+        "pair": "paper 白字 on 资源色块",
+        "ratio": "5.0–6.7:1"
+      }
+    ],
+    "coloredControls": {
+      "mechanism": "行根元素写 --key-ink，名称块与按键用 bg-[var(--key-ink)] / border-[var(--key-ink)] / text-[var(--key-ink)] 取色",
+      "why": "内联 style 的背景优先级最高，会盖掉 .tap:disabled 的灰底，让到达上下限的按键看起来仍可按；纯文字着色不受此限",
+      "disabledFallback": "background var(--color-paper-2); border-color var(--color-paper-3); color var(--color-pencil-light)",
+      "keyAxes": {
+        "fill": {
+          "solid": "主要",
+          "outline": "次要"
+        },
+        "ink": {
+          "resource": "属于这支资源",
+          "graphite": "通用步进"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "实心行动键",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "主行动。石墨实底、纸色字，按下反白，像活字被压进纸里又抬起。",
+      "html": "<button class=\"ds-btn-solid\">进入房间</button>",
+      "css": ".ds-btn-solid { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 8px 16px; border: 2px solid var(--color-graphite, #22201e); border-radius: 0; background: var(--color-graphite, #22201e); color: var(--color-paper, #f7f7f5); font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; line-height: 1.2; user-select: none; touch-action: manipulation; transition: background-color 90ms linear, color 90ms linear, border-color 90ms linear; } .ds-btn-solid:active:not(:disabled) { background: var(--color-paper, #f7f7f5); color: var(--color-graphite, #22201e); } .ds-btn-solid:focus-visible { outline: 2px solid var(--color-graphite, #22201e); outline-offset: 2px; } .ds-btn-solid:disabled { background: var(--color-paper-2, #edece7); border-color: var(--color-paper-3, #e2e0d9); color: var(--color-pencil-light, #8f8b82); cursor: not-allowed; }"
+    },
+    {
+      "name": "空框行动键",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "并列行动与次级操作。纸底 + 2px 石墨框，按下转实底。",
+      "html": "<button class=\"ds-btn-outline\">回到我的</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 8px 16px; border: 2px solid var(--color-graphite, #22201e); border-radius: 0; background: var(--color-paper, #f7f7f5); color: var(--color-graphite, #22201e); font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; line-height: 1.2; user-select: none; touch-action: manipulation; transition: background-color 90ms linear, color 90ms linear, border-color 90ms linear; } .ds-btn-outline:active:not(:disabled) { background: var(--color-graphite, #22201e); color: var(--color-paper, #f7f7f5); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-graphite, #22201e); outline-offset: 2px; }"
+    },
+    {
+      "name": "跨资源行动条",
+      "kind": "button",
+      "refersTo": "key-quick",
+      "description": "影响多个资源的行动不属于任何一张卡片，留在写字板底部单独一排：2px 石墨规则线起头、48px 高、石墨空心框，被作用的资源名取各自的身份色。《月球殖民地》的两个行动都已各归其位，这一排当前不渲染。",
+      "html": "<div class=\"ds-quickrow\"><button class=\"ds-quick\">交易 <span class=\"ds-quick-sub\" style=\"color:#b45309\">钱</span> <span class=\"ds-quick-sub\" style=\"color:#15803d\">食物</span></button></div>",
+      "css": ".ds-quickrow { display: flex; gap: 8px; padding: 12px; font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; } .ds-quick { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; padding: 0 8px; border: 2px solid var(--color-graphite, #22201e); border-radius: 0; background: var(--color-paper, #f7f7f5); color: var(--color-graphite, #22201e); font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; touch-action: manipulation; transition: background-color 90ms linear, color 90ms linear; } .ds-quick-sub { font-weight: 700; } .ds-quick:active { background: var(--color-graphite, #22201e); color: var(--color-paper, #f7f7f5); } .ds-quick:focus-visible { outline: 2px solid var(--color-graphite, #22201e); outline-offset: 2px; }"
+    },
+    {
+      "name": "资源行",
+      "kind": "custom",
+      "refersTo": "key-main",
+      "description": "写字板的主体单元，一张自足的卡片：这个数、改它的键、以及只改它的那个行动全在一起。三行结构与高度完全一致，各取 flex-1 等分剩余高度，只有颜色不同。标题行只有 20px 资源名实色块（不放控件）；操作行是 64px 资源色实心主键 / 52px 石墨空心副键 / 居中石墨读数；注解行是「起始 N」与铅笔痕；行动行是只作用于本资源的快捷行动，居中落在读数正下方与它对齐（同色空心框，56px 高、宽至 16rem 后居中，14px 粗体，按下时盖章填满），没有行动的资源不渲染这一行。颜色走 --key-ink 变量，禁用态因此仍能盖过它。",
+      "html": "<div class=\"ds-crow\" style=\"--key-ink:#b45309\"><div class=\"ds-crow-head\"><h3 class=\"ds-crow-name\">钱</h3><button class=\"ds-crow-quick\">采矿 +4</button></div><div class=\"ds-keys\"><button class=\"ds-key\">−5</button><button class=\"ds-key ds-key-main\">−1</button><span class=\"ds-key-readout\"><span class=\"ds-key-read\">8</span><span class=\"ds-crow-note\"><span>起始 4</span><i>+4</i></span></span><button class=\"ds-key ds-key-main\">+1</button><button class=\"ds-key\" disabled>+5</button></div></div>",
+      "css": ".ds-crow { display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--color-rule, #b4c8d6); font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; } .ds-crow-head { display: flex; align-items: center; gap: 8px; min-height: 44px; } .ds-crow-name { margin: 0; padding: 4px 10px; background: var(--key-ink); color: var(--color-paper, #f7f7f5); font-size: 1.25rem; font-weight: 800; font-stretch: 108%; letter-spacing: -0.01em; line-height: 1.15; } .ds-crow-quick { margin-left: auto; min-height: 44px; padding: 0 12px; border: 2px solid var(--key-ink); border-radius: 0; background: var(--color-paper, #f7f7f5); color: var(--key-ink); font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; touch-action: manipulation; transition: background-color 90ms linear, color 90ms linear, border-color 90ms linear; } .ds-crow-quick:active { background: var(--color-graphite, #22201e); border-color: var(--color-graphite, #22201e); color: var(--color-paper, #f7f7f5); } .ds-crow-quick:focus-visible { outline: 2px solid var(--color-graphite, #22201e); outline-offset: 2px; } .ds-keys { display: flex; align-items: center; gap: 6px; } .ds-key { display: flex; align-items: center; justify-content: center; height: 52px; width: 52px; border: 2px solid var(--color-graphite, #22201e); border-radius: 0; background: var(--color-paper, #f7f7f5); color: var(--color-graphite, #22201e); font-size: 0.875rem; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; font-stretch: 96%; touch-action: manipulation; transition: background-color 90ms linear, color 90ms linear, border-color 90ms linear; } .ds-key-main { height: 64px; width: 64px; background: var(--key-ink); border-color: var(--key-ink); color: var(--color-paper, #f7f7f5); font-size: 1.5rem; } .ds-key:active:not(:disabled) { background: var(--color-graphite, #22201e); color: var(--color-paper, #f7f7f5); } .ds-key-main:active:not(:disabled) { background: var(--color-paper, #f7f7f5); color: var(--color-graphite, #22201e); } .ds-key:disabled { background: var(--color-paper-2, #edece7); border-color: var(--color-paper-3, #e2e0d9); color: var(--color-pencil-light, #8f8b82); cursor: not-allowed; } .ds-key:focus-visible { outline: 2px solid var(--color-graphite, #22201e); outline-offset: 2px; } .ds-key-readout { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; } .ds-key-read { font-size: 4rem; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; font-stretch: 96%; letter-spacing: -0.02em; color: var(--color-graphite, #22201e); } .ds-crow-note { display: flex; align-items: baseline; justify-content: center; gap: 8px; font-size: 0.6875rem; letter-spacing: 0.06em; color: var(--color-pencil, #6f6c64); } .ds-crow-note i { font-style: normal; font-variant-numeric: tabular-nums; font-stretch: 96%; color: var(--color-pencil-light, #8f8b82); }"
+    },
+    {
+      "name": "全桌折叠条",
+      "kind": "nav",
+      "refersTo": "summary-bar",
+      "description": "参照信息的唯一常驻出口，约 48px，整条即展开按钮。常态写「领先＋指示物＋名字＋40px 读数」与「我第 N · 共 M 人」；终局时整条转红晕底 + 警示图标 + 明文。末端 V 形角标展开时旋转 180°。",
+      "html": "<button class=\"ds-summary\" aria-expanded=\"false\"><span class=\"ds-summary-meta\">领先</span><svg class=\"ds-summary-mark\" viewBox=\"0 0 24 24\"><path d=\"M12 1.6l3 7h7.4l-6 4.6 2.3 7.4L12 16.1l-6.7 4.5 2.3-7.4-6-4.6H9Z\" fill=\"#93286b\"/></svg><span class=\"ds-summary-name\">月尘</span><span class=\"ds-summary-num\">30</span><span class=\"ds-summary-meta ds-summary-mine\">我第 2 · 共 4 人</span><svg class=\"ds-summary-chev\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5.5 9 12 15.5 18.5 9\"/></svg></button>",
+      "css": ".ds-summary { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 48px; padding: 8px 12px; border: 0; border-bottom: 1px solid var(--color-rule, #b4c8d6); border-radius: 0; background: var(--color-paper-2, #edece7); text-align: left; font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; touch-action: manipulation; transition: background-color 90ms linear, color 90ms linear; } .ds-summary-meta { flex-shrink: 0; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; color: var(--color-pencil, #6f6c64); } .ds-summary-mine { margin-left: auto; } .ds-summary-mark { width: 20px; height: 20px; flex-shrink: 0; } .ds-summary-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem; font-weight: 700; color: var(--color-graphite, #22201e); } .ds-summary-num { flex-shrink: 0; font-size: 2.5rem; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; font-stretch: 96%; letter-spacing: -0.02em; color: var(--color-graphite, #22201e); } .ds-summary-chev { width: 20px; height: 20px; flex-shrink: 0; color: var(--color-pencil, #6f6c64); transition: transform 150ms ease-out; } .ds-summary[aria-expanded=\"true\"] .ds-summary-chev { transform: rotate(180deg); } .ds-summary:active { background: var(--color-graphite, #22201e); color: var(--color-paper, #f7f7f5); } .ds-summary:focus-visible { outline: 2px solid var(--color-graphite, #22201e); outline-offset: -2px; }"
+    },
+    {
+      "name": "全桌折叠条（终局）",
+      "kind": "nav",
+      "refersTo": "summary-bar-alert",
+      "description": "折叠态下规则层面的终局必须可见：整条换红晕底，印刷红警示图标 + 明文，折叠不得吞掉结论。",
+      "html": "<button class=\"ds-summary-alert\" aria-expanded=\"false\"><svg class=\"ds-summary-alert-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5 3.5 19.5h17L12 5Zm0 5.5v4.5m0 2.5v.01\"/></svg><span class=\"ds-summary-alert-text\">老张的 殖民地失败，本局结束</span><svg class=\"ds-summary-alert-chev\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5.5 9 12 15.5 18.5 9\"/></svg></button>",
+      "css": ".ds-summary-alert { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 48px; padding: 8px 12px; border: 0; border-bottom: 1px solid var(--color-rule, #b4c8d6); border-radius: 0; background: var(--color-mark-soft, #f6dee2); text-align: left; font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; touch-action: manipulation; } .ds-summary-alert-icon { width: 16px; height: 16px; flex-shrink: 0; color: var(--color-mark, #c8102e); } .ds-summary-alert-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; color: var(--color-mark, #c8102e); } .ds-summary-alert-chev { width: 20px; height: 20px; flex-shrink: 0; color: var(--color-pencil, #6f6c64); transition: transform 150ms ease-out; } .ds-summary-alert[aria-expanded=\"true\"] .ds-summary-alert-chev { transform: rotate(180deg); } .ds-summary-alert:focus-visible { outline: 2px solid var(--color-graphite, #22201e); outline-offset: -2px; }"
+    },
+    {
+      "name": "全桌表行",
+      "kind": "card",
+      "refersTo": "row-active",
+      "description": "展开后才出现的整张表，装在最高 38dvh 的滚动容器里，底边由 2px 石墨规则线收住。红方块＝我那一栏，空心指示物＝离线，横穿整行的一笔 + 「失败」标签＝出局。行高 46px 即触控高度。",
+      "html": "<div class=\"ds-pad\"><div class=\"ds-pad-head\"><span>玩家</span><span>幸存者</span><span>名次</span></div><div class=\"ds-pad-row ds-pad-row-mine\"><span class=\"ds-pad-who\"><i class=\"ds-pad-flag\"></i><svg class=\"ds-pad-mark\" viewBox=\"0 0 24 24\"><path d=\"M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z\" fill=\"#14538d\"/></svg><b>我</b></span><span class=\"ds-pad-num\">24</span><span class=\"ds-pad-rank\">2</span></div><div class=\"ds-pad-row\"><span class=\"ds-pad-who\"><i class=\"ds-pad-flag ds-pad-flag-empty\"></i><svg class=\"ds-pad-mark\" viewBox=\"0 0 24 24\"><path d=\"M8.1 2.2h7.8L21.8 12l-5.9 9.8H8.1L2.2 12Z\" fill=\"none\" stroke=\"#0f6b6b\" stroke-width=\"2.4\"/></svg><span>老张</span><em class=\"ds-pad-out\">失败</em></span><span class=\"ds-pad-num ds-pad-off\">0</span><span class=\"ds-pad-rank\"></span><i class=\"ds-pad-strike\"></i></div></div>",
+      "css": ".ds-pad { max-height: 38dvh; overflow-y: auto; border-bottom: 2px solid var(--color-graphite, #22201e); font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; background: var(--color-paper, #f7f7f5); } .ds-pad-head { display: grid; grid-template-columns: minmax(0,1fr) 3rem 2.25rem; gap: 0 4px; align-items: end; padding: 10px 12px 8px; background: var(--color-mark, #c8102e); color: var(--color-paper, #f7f7f5); font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; } .ds-pad-head span + span { text-align: right; } .ds-pad-row { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 3rem 2.25rem; gap: 0 4px; align-items: center; min-height: 2.875rem; padding: 6px 12px; border-bottom: 1px solid var(--color-rule, #b4c8d6); } .ds-pad-row-mine { background: var(--color-paper-3, #e2e0d9); } .ds-pad-who { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--color-graphite, #22201e); } .ds-pad-flag { width: 10px; height: 10px; background: var(--color-mark, #c8102e); } .ds-pad-flag-empty { background: transparent; } .ds-pad-mark { width: 20px; height: 20px; } .ds-pad-out { position: relative; z-index: 1; font-style: normal; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; padding: 2px 4px; border: 1px solid var(--color-mark, #c8102e); background: var(--color-paper, #f7f7f5); color: var(--color-mark, #c8102e); } .ds-pad-num { text-align: right; font-size: 1.5rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums lining-nums; font-stretch: 96%; letter-spacing: -0.02em; color: var(--color-graphite, #22201e); } .ds-pad-off { color: var(--color-pencil, #6f6c64); } .ds-pad-rank { text-align: right; font-size: 0.875rem; font-variant-numeric: tabular-nums; color: var(--color-pencil, #6f6c64); } .ds-pad-strike { position: absolute; left: 8px; right: 8px; top: 50%; height: 2px; background: var(--color-mark, #c8102e); }"
+    },
+    {
+      "name": "填空位",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "表格里的填空位：底下一条发丝线，字写在线上。聚焦时线由 1px 发丝加粗为 2px 石墨，是唯一的状态变化。",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">昵称</span><input class=\"ds-field-input\" type=\"text\" placeholder=\"同桌怎么叫你\" /></label>",
+      "css": ".ds-field { display: block; font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; } .ds-field-label { display: block; margin-bottom: 6px; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; line-height: 1.2; color: var(--color-pencil, #6f6c64); } .ds-field-input { display: block; width: 100%; min-height: 44px; padding: 8px 0; border: 0; border-bottom: 1px solid var(--color-rule, #b4c8d6); border-radius: 0; background: transparent; font-size: 0.875rem; line-height: 1.5; color: var(--color-graphite, #22201e); } .ds-field-input::placeholder { color: var(--color-pencil, #6f6c64); } .ds-field-input:focus { outline: none; border-bottom: 2px solid var(--color-graphite, #22201e); }"
+    },
+    {
+      "name": "复写黄联表头",
+      "kind": "card",
+      "refersTo": "carbon-copy",
+      "description": "看别人时整块写字板换成 NCR 黄联：格线换 carbon-line、读数换碳墨、盖上 −3° 的「副本」章，不渲染任何控件。资源名称块保持满饱和的资源色——它是预印上去的，不随复写变淡。只读不是被禁用的按钮，而是另一张纸。",
+      "html": "<section class=\"ds-carbon\"><header class=\"ds-carbon-head\"><span class=\"ds-carbon-stamp\">副本</span><h2 class=\"ds-carbon-title\">小林 的一栏 · 只读</h2></header><p class=\"ds-carbon-read\">24</p></section>",
+      "css": ".ds-carbon { border-top: 2px solid var(--color-graphite, #22201e); background: var(--color-carbon, #f4e8b4); font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; box-shadow: 0 -10px 28px -12px rgba(34, 32, 30, 0.28); } .ds-carbon-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--color-carbon-line, #cbb469); } .ds-carbon-stamp { transform: rotate(-3deg); padding: 2px 6px; border: 2px solid var(--color-mark, #c8102e); color: var(--color-mark, #c8102e); font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; } .ds-carbon-title { margin: 0; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; color: var(--color-graphite, #22201e); } .ds-carbon-read { margin: 0; padding: 12px; text-align: center; font-size: 4rem; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; font-stretch: 96%; letter-spacing: -0.02em; color: var(--color-carbon-ink, #5f5949); }"
+    },
+    {
+      "name": "中继状态记号",
+      "kind": "chip",
+      "refersTo": "button-quiet",
+      "description": "每个中继一枚圆点：实心＝已连、空心呼吸＝连接中、划掉＝失败。状态由记号承担，色相只是附带。",
+      "html": "<span class=\"ds-relay\"><svg viewBox=\"0 0 25 8\" class=\"ds-relay-dots\"><circle cx=\"3.5\" cy=\"4\" r=\"3\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"12.5\" cy=\"4\" r=\"3\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"21.5\" cy=\"4\" r=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"19\" y1=\"6.5\" x2=\"24\" y2=\"1.5\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\"/></svg>3 人在线</span>",
+      "css": ".ds-relay { display: inline-flex; align-items: center; gap: 6px; font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; color: var(--color-graphite, #22201e); } .ds-relay-dots { height: 8px; width: 25px; }"
+    },
+    {
+      "name": "底部一联纸",
+      "kind": "custom",
+      "refersTo": "sheet",
+      "description": "从底部抽出的一联纸。顶边 2px 石墨规则线，与主表用同一张纸，只是叠在上面；45% 石墨遮罩，只平移不缩放。",
+      "html": "<div class=\"ds-sheet-wrap\"><div class=\"ds-sheet-scrim\"></div><section class=\"ds-sheet\"><header class=\"ds-sheet-head\"><h2 class=\"ds-sheet-title\">这一局</h2><button class=\"ds-sheet-close\" aria-label=\"关闭\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button></header><ul class=\"ds-sheet-list\"><li>查看排行</li><li>邀请同桌</li></ul></section></div>",
+      "css": ".ds-sheet-wrap { position: relative; height: 260px; display: flex; align-items: flex-end; } .ds-sheet-scrim { position: absolute; inset: 0; background: rgba(34, 32, 30, 0.45); } .ds-sheet { position: relative; width: 100%; border-top: 2px solid var(--color-graphite, #22201e); background: var(--color-paper, #f7f7f5); font-family: 'Archivo Variable', system-ui, 'PingFang SC', sans-serif; } .ds-sheet-head { display: flex; align-items: flex-start; gap: 12px; padding: 16px 16px 12px; } .ds-sheet-title { flex: 1; margin: 0; padding-top: 4px; font-size: 0.6875rem; font-weight: 650; letter-spacing: 0.06em; color: var(--color-graphite, #22201e); } .ds-sheet-close { display: flex; align-items: center; justify-content: center; height: 40px; width: 40px; border: 2px solid transparent; border-radius: 0; background: transparent; color: var(--color-pencil, #6f6c64); } .ds-sheet-close svg { height: 20px; width: 20px; } .ds-sheet-close:active { background: var(--color-graphite, #22201e); color: var(--color-paper, #f7f7f5); } .ds-sheet-list { margin: 0; padding: 0; list-style: none; border: 2px solid var(--color-graphite, #22201e); } .ds-sheet-list li { min-height: 56px; display: flex; align-items: center; padding: 0 12px; font-size: 0.875rem; color: var(--color-graphite, #22201e); border-bottom: 1px solid var(--color-rule, #b4c8d6); } .ds-sheet-list li:last-child { border-bottom: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "预印计分纸（The Pre-Printed Score Pad）",
+    "overview": "整个界面是一张纸，不是一个应用。冷白胶版纸上预先印好了青蓝格线、红色表头条和列名，玩家做的唯一一件事是在自己那一格里写数。所有层级都由印刷厂能做到的手段造出来：线宽、字距、字宽、实色套印、纸张本身的颜色。凡是印刷做不到的（发光、模糊、圆角药丸、渐变、悬浮卡片阴影）都不属于这个世界。\n\n这张纸的版面是按任务分配的，不是按信息量分配的：自己那一栏占掉整页的大部分，全桌的参照压成顶端一条 48px 的折叠条，需要时才展开。三个资源在写字板上等高等大，因为它们在牌桌上被同样频繁地增减——分量不由尺寸宣布，由材质宣布（实心压印的主步进键 vs 空心框的副步进键），身份则由各自的资源色宣布（名称块、两枚主键、读数正下方那个属于这支资源的行动键同色）。\n\n深度只有一层：压在计分表下方的那块写字板。颜色极度节制：全站真正的彩色只有印刷红、资源实色标签块和八枚玩家指示物油墨，其余全是纸色与石墨、铅笔灰。明确拒绝的反面：深色霓虹记分台、圆角卡片、发光药丸（本项目上一版正是如此），以及它可预测的另一极——无装饰的字体极简。",
+    "keyCharacteristics": [
+      "版面按任务分配：操作面板主导，参照信息折叠",
+      "线宽只有两档：1px 青蓝发丝格线、2px 石墨粗规则线",
+      "圆角为零，纸是裁切的不是打磨的",
+      "文本三档 + 数字三档，层级差另由 Archivo 的 wdth 轴承担",
+      "状态由记号传达（划线、空心、复写联、盖章），不靠色相",
+      "深度只有一层：写字板压在计分表上",
+      "运动只有平移与压印，无弹跳无发光"
+    ],
+    "rules": [
+      {
+        "name": "The Sparing Mark Rule",
+        "body": "印刷红只出现在表头条、我那一行的常驻标记、合计收尾线、出局横线，以及折叠条上的出局警示。多一处，红就不再意味「这是印上去的」。",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Is One Pen Rule",
+        "body": "所有读数都是石墨，因为纸上的数字是同一支笔写的。资源的颜色属于底材（标签块），不属于手写的数字。唯一的例外是复写黄联，那里读数改用碳墨。",
+        "section": "colors"
+      },
+      {
+        "name": "The Marker Not Hue Rule",
+        "body": "任何状态都必须有一个非色相的记号：离线＝空心指示物＋铅笔灰读数，出局＝横穿整行的一笔＋「失败」标签（折叠态下则是警示图标＋整条换底），只读＝黄联＋「副本」盖章，中继＝实心／空心呼吸／划掉的圈。色相只是附带。",
+        "section": "colors"
+      },
+      {
+        "name": "The Variable Ink Rule",
+        "body": "控件的背景与边框着色走行级 CSS 变量（--key-ink）+ 工具类，不走内联 style。内联样式优先级最高，会盖掉禁用态的灰底，让已经到达上下限的按键看起来仍可按。着色方式必须给状态样式留出覆盖的余地；纯文字着色不受此限。",
+        "section": "colors"
+      },
+      {
+        "name": "The Reskin Surface Rule",
+        "body": "换皮接口只有 --color-paper / --color-rule / --color-mark 三个变量，写在房间页根元素上，--color-mark-soft 由 color-mix(in oklab, mark 12%, paper) 派生。新增游戏不得为换皮触碰任何组件，也不得扩张这三个之外的变量。",
+        "section": "colors"
+      },
+      {
+        "name": "The Three-and-Three Rule",
+        "body": "文本只有 11 / 14 / 20 三档，数字只有 24 / 40 / 64 三档。需要更强的层级时调 wdth 轴与字重，不新增字号档。",
+        "section": "typography"
+      },
+      {
+        "name": "The Drop-a-Step Rule",
+        "body": "加减键是定宽的，读数格不能被撑破。数值达到三位数（≥100）时读数落到下一档（64→40），而不是引入流体字号或让数字溢出。",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Always Rule",
+        "body": "任何数字都是格子里的数字：一律 tabular-nums lining-nums，数值跳动时字形宽度不得变化。",
+        "section": "typography"
+      },
+      {
+        "name": "The Task Owns the Page Rule",
+        "body": "版面按任务分配高度，不按信息量。访客此刻要做的那件事（在房间页是改自己的数）拿走剩余的全部高度；参照信息折叠成一条固定高度的横条，展开后也必须有上限（全桌表 ≤38dvh），不得再把操作面板挤成配角。",
+        "section": "layout"
+      },
+      {
+        "name": "The Folded Bar Still Speaks Rule",
+        "body": "折叠掉一块内容，就必须在折叠条上保住它的结论。全桌折叠条在任何状态下都要回答「谁在领先、我在第几」；一旦出现规则层面的终局（有人出局），整条换成红晕底 + 警示图标 + 明文，不能因为收起来就看不见。",
+        "section": "layout"
+      },
+      {
+        "name": "The Equal Weight Rule",
+        "body": "同类元素在同一块面板里等高等大。差别由材质表达（实心压印 vs 空心框）、由标注表达（「排行依据」）、由身份色表达（每行自己的资源色），不由尺寸表达。",
+        "section": "layout"
+      },
+      {
+        "name": "The Two-Axis Key Rule",
+        "body": "按键的分量只由填充与墨色两条轴表达：实心比空心重，资源色说明「这属于那一支资源」，石墨说明「这是通用步进」。不靠尺寸、不靠阴影、不靠圆角再造第三条轴。",
+        "section": "shapes"
+      },
+      {
+        "name": "The One Shadow Rule",
+        "body": "投影只允许表达「一张纸压在另一张纸上」。状态变化（悬停、选中、聚焦、展开／收起）一律不产生投影——它们用底色、线宽、反白或角标旋转表达。",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do 把剩余高度给访客此刻要做的那件事，参照信息折成固定高度的横条。",
+      "Do 在折叠条上保住被折叠内容的结论（谁领先、我第几、本局是否已经结束）。",
+      "Do 让同一块面板里的同类元素等高等大，差别交给材质与标注。",
+      "Do 用线分隔，不用间距分隔：1px 青蓝发丝线分行，2px 石墨规则线分区。",
+      "Do 让所有读数保持石墨（黄联上保持碳墨），把资源颜色留给这支资源自己的名称块、主步进键，以及落在读数正下方的那个行动键。",
+      "Do 用行级 CSS 变量（`--key-ink`）给控件的底与边框上色，让禁用态等状态样式仍能覆盖它。",
+      "Do 把只改一个数的行动放进那个数所在的卡片；跨资源的行动才下放到写字板底部单独一排。",
+      "Do 给每一个状态配一个非色相记号（划线、空心、复写联、盖章、实心／空心圈、警示图标）。",
+      "Do 需要更强层级时调 Archivo 的 wdth 轴和字重，不新增字号档；读数破百时降一档而不是让它溢出。",
+      "Do 在每个可改的读数旁常驻\"起始 N\"，让人随时能系回默认值。",
+      "Do 保持触控目标 ≥44px，主要操作放在下半屏。",
+      "Do 新增游戏时只覆盖 paper / rule / mark 三个 CSS 变量。"
+    ],
+    "donts": [
+      "Don't 让参照性内容默认占据半屏以上；展开态也要有高度上限。",
+      "Don't 把资源名缩成 11px 角标——它是那一行的标题，用 20px。",
+      "Don't 用尺寸宣布哪个资源或哪个按键更重要——那是填充、墨色与标注的事。",
+      "Don't 引入第三档线宽或第三档边框粗细。",
+      "Don't 给任何元素加圆角。",
+      "Don't 用投影表达状态变化；投影只表达\"一张纸压在另一张纸上\"。",
+      "Don't 把资源色用在读数上；它只能是整片实色底材或实色的资源名。",
+      "Don't 用内联 `style` 给按钮的底或边框上色——它会压过禁用态，让按不动的键看起来还能按。",
+      "Don't 把只读表达成禁用的控件；只读是另一张纸（黄联 + 副本章 + 不渲染控件）。",
+      "Don't 在读数上加删除线；出局用横穿整行的一笔。",
+      "Don't 为展开／收起换一枚图标；同一枚 V 形角标旋转 180°。",
+      "Don't 用 Unicode 字形、emoji 或图标字体代替图标组件里的矢量图标。",
+      "Don't 给中文加大写变换或 0.14em 级的宽字距。",
+      "Don't 使用弹跳、缩放、发光或模糊——运动只有平移与压印。"
+    ]
+  }
+}

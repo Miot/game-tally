@@ -1,9 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import tailwindcss from '@tailwindcss/vite'
-import { VantResolver } from '@vant/auto-import-resolver'
 import vue from '@vitejs/plugin-vue'
-import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
@@ -15,10 +13,6 @@ export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
-    Components({
-      resolvers: [VantResolver()],
-      dts: 'src/components.d.ts',
-    }),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon-180x180.png', 'maskable-icon-512x512.png'],
@@ -27,8 +21,8 @@ export default defineConfig({
         short_name: '局分',
         description: '桌游 token 计分器，同桌玩家互看分数',
         lang: 'zh-CN',
-        theme_color: '#f5f7fb',
-        background_color: '#f5f7fb',
+        theme_color: '#f7f7f5',
+        background_color: '#f7f7f5',
         display: 'standalone',
         orientation: 'portrait',
         start_url: BASE,
@@ -49,6 +43,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // 只引 latin 子集：界面是中文加基本拉丁，latin-ext 与 vietnamese 永远用不到，
+      // 但整包导入会让它们进 PWA 预缓存，白占 118KB。
+      '@archivo': fileURLToPath(
+        new URL('./node_modules/@fontsource-variable/archivo/files', import.meta.url),
+      ),
     },
   },
 })

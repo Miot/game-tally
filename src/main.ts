@@ -1,6 +1,3 @@
-import '@fontsource-variable/orbitron'
-import 'vant/es/toast/style'
-import 'vant/es/dialog/style'
 import './theme/main.css'
 
 import { createPinia } from 'pinia'
