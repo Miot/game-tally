@@ -8,3 +8,9 @@ coverage
 test-results
 playwright-report
 node_modules/.tmp
+
+# impeccable：方向契约与配置入库，审查截图与运行时状态不入库
+.impeccable/review
+.impeccable/questions
+.impeccable/live/sessions
+.impeccable/hook.cache.json
