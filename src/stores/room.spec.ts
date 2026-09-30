@@ -110,6 +110,42 @@ describe('useRoomStore', () => {
     expect(again.store.players['player-B']?.counters.food).toBe(6)
   })
 
+  it('认输随状态同步给全桌，撤回与重置都会取消出局', async () => {
+    const a = createPlayer(hub, 'A')
+    const b = createPlayer(hub, 'B')
+    await a.open()
+    await b.open()
+
+    // 幸存者可以越过零：出局不再由计数器推导
+    a.store.adjust('survivors', -40)
+    await flush()
+    expect(b.store.players['player-A']?.counters.survivors).toBe(-10)
+    expect(b.store.isEliminated(b.store.players['player-A']!)).toBe(false)
+
+    a.store.setConceded(true)
+    await flush()
+    expect(b.store.isEliminated(b.store.players['player-A']!)).toBe(true)
+
+    a.store.setConceded(false)
+    await flush()
+    expect(b.store.isEliminated(b.store.players['player-A']!)).toBe(false)
+
+    a.store.setConceded(true)
+    a.store.resetMine()
+    await flush()
+    expect(b.store.players['player-A']?.counters.survivors).toBe(30)
+    expect(b.store.isEliminated(b.store.players['player-A']!)).toBe(false)
+  })
+
+  it('重复认输不产生新版本', async () => {
+    const a = createPlayer(hub, 'A')
+    await a.open()
+    a.store.setConceded(true)
+    const version = a.store.me!.version
+    a.store.setConceded(true)
+    expect(a.store.me!.version).toBe(version)
+  })
+
   it('他人只能查看不能修改：冒充本人的消息被忽略', async () => {
     const a = createPlayer(hub, 'A')
     const b = createPlayer(hub, 'B')

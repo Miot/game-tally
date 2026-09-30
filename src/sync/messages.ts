@@ -11,6 +11,8 @@ export interface PlayerState {
   version: number
   updatedAt: number
   lastChange?: { counterId: CounterId; delta: number; at: number }
+  /** 本人点了「认输」：这一栏出局，全桌本局结束。可撤回，缺省视为未认输 */
+  conceded?: boolean
 }
 
 export type SyncMessage =

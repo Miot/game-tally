@@ -30,6 +30,8 @@ const emit = defineEmits<{
   adjust: [counterId: CounterId, delta: number]
   quick: [actionId: string]
   undo: []
+  concede: []
+  retractConcession: []
   backToMine: []
 }>()
 
@@ -62,13 +64,18 @@ const sharedActions = computed(() =>
   props.game.quickActions.filter((action) => touched(action).length > 1),
 )
 
-/** 跨资源的行动要说明它动了哪几项，资源名用各自的那支色 */
+/**
+ * 跨资源的行动要说明它动了哪几项，资源名压在各自的实色小块上。
+ * 不直接用资源色写字：浅色资源的字落在纸上读不出。
+ */
 function quickTargets(
   delta: Readonly<Partial<Record<CounterId, number>>>,
-): { id: CounterId; name: string; color: string }[] {
+): { id: CounterId; name: string; color: string; onColor: string }[] {
   return Object.keys(delta).flatMap((id) => {
     const counter = props.game.counters.find((item) => item.id === id)
-    return counter ? [{ id: counter.id, name: counter.name, color: counter.color }] : []
+    return counter
+      ? [{ id: counter.id, name: counter.name, color: counter.color, onColor: counter.onColor }]
+      : []
   })
 }
 
@@ -98,13 +105,25 @@ const lastChangeText = computed(() => {
       :class="editable ? 'hair-b' : 'border-b border-carbon-line'"
     >
       <template v-if="editable">
-        <h2 class="label-cn text-graphite">我的一栏</h2>
-        <p v-if="lastChangeText" class="label-cn truncate font-normal text-pencil">
+        <h2 class="label-cn shrink-0 text-graphite">我的一栏</h2>
+        <p v-if="lastChangeText" class="label-cn min-w-0 truncate font-normal text-pencil">
           {{ lastChangeText }}
         </p>
+        <!--
+          认输是整局的终点，不是补救操作：放在表头，远离下半屏频繁点按的步进键，
+          点下去还有一张确认便签兜底。认输后同一位置换成撤回，不另占一行。
+        -->
+        <PadButton
+          class="ml-auto shrink-0"
+          variant="outline"
+          data-testid="concede"
+          @click="eliminated ? emit('retractConcession') : emit('concede')"
+        >
+          {{ eliminated ? '撤回认输' : '认输' }}
+        </PadButton>
         <button
           type="button"
-          class="tap ml-auto flex h-11 w-11 shrink-0 items-center justify-center border-2 border-graphite bg-paper text-graphite"
+          class="tap flex h-11 w-11 shrink-0 items-center justify-center border-2 border-graphite bg-paper text-graphite"
           :disabled="!canUndo"
           aria-label="撤销"
           @click="emit('undo')"
@@ -136,7 +155,7 @@ const lastChangeText = computed(() => {
       class="flex shrink-0 items-center gap-2 border-b border-rule bg-mark-soft px-3 py-2 text-body text-mark"
     >
       <span class="h-4 w-4 shrink-0"><PadIcon name="warning" /></span>
-      {{ editable ? '你的' : '' }}{{ game.elimination.label }}，按规则本局在此结束。
+      {{ editable ? '你' : state.name }}已认输，{{ game.elimination.label }}，本局在此结束。
     </p>
 
     <!-- 三个资源等分剩余高度：这局里它们都被频繁增减，没有哪个该被缩小 -->
@@ -170,8 +189,8 @@ const lastChangeText = computed(() => {
         <span
           v-for="target in quickTargets(action.delta)"
           :key="target.id"
-          class="font-bold"
-          :style="{ color: target.color }"
+          class="px-1 font-bold"
+          :style="{ backgroundColor: target.color, color: target.onColor }"
         >
           {{ target.name }}
         </span>

@@ -276,7 +276,7 @@ a {
 
 /*
  * 行动键是一枚印章。按下的瞬间墨色灌满整个框、纸面被压下一点；
- * 松手后墨迹慢慢渗进纸里，只留下印框。
+ * 松手后墨迹慢慢渗进纸里，只留下印框。灌满时字色换成压在资源色上的那支（--key-on）。
  *
  * 压下要快，渗回可以慢 —— 慢的那一半不挡任何操作，它是「这笔已经落纸」的证据。
  * 同一时刻读数在 ink-set 里落定、nib-stroke 从格底划过，三者是一次完整的盖章记账。
@@ -291,7 +291,7 @@ a {
 }
 .tap-stamp:active:not(:disabled) {
   background-color: var(--key-ink);
-  color: var(--color-paper);
+  color: var(--key-on);
   transform: translateY(1px);
   transition-duration: 40ms;
 }

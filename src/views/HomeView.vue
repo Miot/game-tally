@@ -51,7 +51,7 @@ function resumeRoom(): void {
   router.push({ name: 'room', params: { code: lastRoom.value } })
 }
 
-function heroIconOf(game: GameDefinition): string {
+function heroIconOf(game: GameDefinition): string | undefined {
   return (game.counters.find((counter) => counter.hero) ?? game.counters[0]!).icon
 }
 </script>
@@ -135,7 +135,12 @@ function heroIconOf(game: GameDefinition): string {
             @error="coverFailed[game.id] = true"
           />
           <div v-else class="flex aspect-square w-full items-center justify-center bg-paper-2">
-            <img :src="heroIconOf(game)" alt="" class="h-16 w-16 object-contain" />
+            <img
+              v-if="heroIconOf(game)"
+              :src="heroIconOf(game)"
+              alt=""
+              class="h-16 w-16 object-contain"
+            />
           </div>
 
           <span class="hair-t flex flex-col gap-1 px-2.5 py-2.5">

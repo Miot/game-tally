@@ -14,8 +14,8 @@ test.describe('房间流程', () => {
     await expect(survivors).toHaveText('29')
 
     const money = page.getByTestId('counter-money-value')
-    await page.getByTestId('counter-money-inc-5').click()
-    await expect(money).toHaveText('9')
+    await page.getByTestId('counter-money-inc-4').click()
+    await expect(money).toHaveText('8')
     await page.getByRole('button', { name: '撤销' }).click()
     await expect(money).toHaveText('4')
 
@@ -23,7 +23,7 @@ test.describe('房间流程', () => {
     await expect(page.getByTestId('counter-food-value')).toHaveText('8')
 
     // 计数不会低于下限，到达下限后减少按钮禁用
-    await page.getByTestId('counter-money-dec-5').click()
+    await page.getByTestId('counter-money-dec-4').click()
     await expect(money).toHaveText('0')
     await expect(page.getByTestId('counter-money-dec-1')).toBeDisabled()
     await page.getByTestId('quick-mine').click()
@@ -60,31 +60,48 @@ test.describe('房间流程', () => {
     await expect(page.getByTestId(/^chip-/)).toHaveCount(1)
   })
 
-  test('幸存者归零即出局，整行标记并结束本局', async ({ page }) => {
+  test('幸存者可以减到负数，认输才结束本局且可撤回', async ({ page }) => {
     await page.goto('./#/r/M4TZ')
     await page.getByPlaceholder('你的昵称').fill('末人')
     await page.getByTestId('confirm-profile').click()
 
     const survivors = page.getByTestId('counter-survivors-value')
+    const summary = page.getByTestId('table-summary')
     await expect(survivors).toHaveText('30')
-    // 起始 30，减六次 5 恰好归零
-    for (let i = 0; i < 6; i += 1) {
-      await page.getByTestId('counter-survivors-dec-5').click()
+    // 起始 30，减八次 4 到 −2：越过零照常记，不会自动出局，也不锁减少键
+    for (let i = 0; i < 8; i += 1) {
+      await page.getByTestId('counter-survivors-dec-4').click()
     }
-    await expect(survivors).toHaveText('0')
+    await expect(survivors).toHaveText('-2')
+    await expect(page.getByTestId('counter-survivors-dec-1')).toBeEnabled()
+    await expect(summary).not.toContainText('殖民地失败')
 
-    // 到达下限后不能再减
-    await expect(page.getByTestId('counter-survivors-dec-5')).toBeDisabled()
-    await expect(page.getByTestId('counter-survivors-dec-1')).toBeDisabled()
+    // 认输先过一张确认便签，取消则什么都不发生
+    const concede = page.getByTestId('concede')
+    const dialog = page.getByRole('alertdialog', { name: '认输' })
+    await concede.click()
+    await dialog.getByRole('button', { name: '取消' }).click()
+    await expect(summary).not.toContainText('殖民地失败')
+
+    await concede.click()
+    await dialog.getByRole('button', { name: '认输' }).click()
 
     // 折叠状态下摘要条也必须把「本局结束」说出来，不能因为折起就丢掉规则信息
-    await expect(page.getByTestId('table-summary')).toContainText('殖民地失败')
-    await expect(page.getByTestId('table-summary')).toContainText('本局结束')
+    await expect(summary).toContainText('殖民地失败')
+    await expect(summary).toContainText('本局结束')
+    await expect(page.getByText('你已认输')).toBeVisible()
 
-    // 展开后那一行标记为出局，写字板给出本局结束的说明
-    await page.getByTestId('table-summary').click()
-    await expect(page.getByTestId(/^chip-/).first()).toHaveAttribute('aria-label', /殖民地失败/)
-    await expect(page.getByText('按规则本局在此结束')).toBeVisible()
+    // 展开后那一行标记为出局
+    await summary.click()
+    const chip = page.getByTestId(/^chip-/).first()
+    await expect(chip).toHaveAttribute('aria-label', /殖民地失败/)
+
+    // 同一位置换成撤回，撤回后回到正常名次
+    await expect(concede).toHaveText('撤回认输')
+    await concede.click()
+    await expect(chip).toHaveAttribute('aria-label', /第 1 名/)
+    await expect(page.getByText('你已认输')).toHaveCount(0)
+    await expect(concede).toHaveText('认输')
   })
 
   test('首页四格填房间号加入', async ({ page }) => {

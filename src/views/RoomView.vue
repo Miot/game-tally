@@ -119,8 +119,8 @@ watch(
 )
 
 /*
- * 殖民地覆灭不另做播报：计分表里那一行会被划掉并标「失败」，
- * 本人的写字板顶部还有一条横幅。痕迹留在纸上，比一闪而过的提示可靠。
+ * 认输不另做播报：计分表里那一行会被划掉并标「失败」，折叠条转为警示，
+ * 写字板顶部还有一条横幅。痕迹留在纸上，比一闪而过的提示可靠。
  */
 
 function vibrate(pattern: number | number[]): void {
@@ -135,6 +135,24 @@ function onAdjust(counterId: CounterId, delta: number): void {
 function onQuick(actionId: string): void {
   room.applyQuickAction(actionId)
   vibrate(10)
+}
+
+/** 认输会让全桌本局结束，先确认；撤回只是恢复原状，直接执行 */
+async function onConcede(): Promise<void> {
+  const confirmed = await showConfirm({
+    title: '认输',
+    message: `宣告你的${game.elimination.label}，全桌都会看到本局结束。之后仍可在原处撤回。`,
+    confirmText: '认输',
+    destructive: true,
+  })
+  if (!confirmed) return
+  room.setConceded(true)
+  vibrate([30, 40, 30])
+}
+
+function onRetractConcession(): void {
+  room.setConceded(false)
+  showToast('已撤回认输')
 }
 
 function backToMine(): void {
@@ -303,6 +321,8 @@ async function onMenuSelect(action: MenuAction): Promise<void> {
       @adjust="onAdjust"
       @quick="onQuick"
       @undo="room.undo"
+      @concede="onConcede"
+      @retract-concession="onRetractConcession"
       @back-to-mine="backToMine"
     />
 

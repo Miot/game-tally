@@ -9,10 +9,21 @@ export interface CounterDefinition {
   id: CounterId
   /** 中文显示名 */
   name: string
-  /** token 图片地址：从官方规则书提取的真实 token 图案 */
-  icon: string
-  /** 读数颜色（十六进制），需在白色卡片上可读 */
+  /**
+   * token 图片地址：依据官方规则书重绘的 token 图案。
+   * 只用作首页封面加载失败时的占位，因此只有主计数器需要，其余可省。
+   */
+  icon?: string
+  /**
+   * 资源色（十六进制）：名称块与主步进键的整片底色，也是本资源快捷行动的边框色。
+   * 可以是浅色 —— 压在它上面的字由 onColor 负责，读数永远是石墨。
+   */
   color: string
+  /**
+   * 压在资源色上的字色（十六进制）。它只压在 24px 粗体上（名称块、主步进键），
+   * 按 WCAG 大字标准与 color 的对比度不低于 3:1；拿去写小字时须提到 4.5:1。
+   */
+  onColor: string
   /** 每位玩家开局的数量 */
   initial: number
   min: number
@@ -38,10 +49,11 @@ export interface CoverImage {
   alt: string
 }
 
+/**
+ * 出局：不由计数器推导，由玩家自己点「认输」宣告，任何一人认输即本局结束。
+ * 计数器因此可以自由越过零，何时撑不下去由牌桌上的人判断。
+ */
 export interface EliminationRule {
-  counterId: CounterId
-  /** 计数器小于等于该值即视为出局 */
-  atOrBelow: number
   /** 出局时显示的状态文案 */
   label: string
 }

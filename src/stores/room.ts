@@ -110,10 +110,9 @@ export const useRoomStore = defineStore('room', () => {
     )
   })
 
+  /** 出局只看本人是否认输，与计数器无关 */
   function isEliminated(state: PlayerState): boolean {
-    const rule = game.value?.elimination
-    if (!rule) return false
-    return (state.counters[rule.counterId] ?? 0) <= rule.atOrBelow
+    return state.conceded === true
   }
 
   function isOnline(playerId: string): boolean {
@@ -283,25 +282,34 @@ export const useRoomStore = defineStore('room', () => {
     relays.value = []
   }
 
+  /** 改写本人这一栏：递增版本、合并广播并落盘。入房之后本人的状态只经由这里写入 */
+  function writeMine(patch: Partial<PlayerState>): void {
+    const current = me.value
+    if (!current) return
+    players.value[current.playerId] = {
+      ...current,
+      ...patch,
+      version: current.version + 1,
+      updatedAt: Date.now(),
+    }
+    scheduleBroadcast()
+    persist()
+  }
+
   function commitChanges(changes: CounterChange[], recordUndo: boolean): void {
     const current = me.value
     if (!current || changes.length === 0) return
     const counters = { ...current.counters }
     for (const change of changes) counters[change.counterId] += change.delta
     const last = changes[changes.length - 1]!
-    players.value[current.playerId] = {
-      ...current,
+    writeMine({
       counters,
-      version: current.version + 1,
-      updatedAt: Date.now(),
       lastChange: { counterId: last.counterId, delta: last.delta, at: Date.now() },
-    }
+    })
     if (recordUndo) {
       undoStack.value.push({ changes })
       if (undoStack.value.length > UNDO_LIMIT) undoStack.value.shift()
     }
-    scheduleBroadcast()
-    persist()
   }
 
   /** 计算受范围约束后实际生效的增减量，0 表示没有变化 */
@@ -339,33 +347,21 @@ export const useRoomStore = defineStore('room', () => {
     )
   }
 
+  /** 恢复成开局：计数回到初始值，认输一并撤回 */
   function resetMine(): void {
-    const current = me.value
-    if (!current || !game.value) return
-    players.value[current.playerId] = {
-      ...current,
-      counters: initialCounters(game.value),
-      version: current.version + 1,
-      updatedAt: Date.now(),
-      lastChange: undefined,
-    }
+    if (!me.value || !game.value) return
+    writeMine({ counters: initialCounters(game.value), lastChange: undefined, conceded: false })
     undoStack.value = []
-    scheduleBroadcast()
-    persist()
+  }
+
+  /** 认输与撤回认输。不进撤销栈：撤销只回退计数，认输有自己的撤回入口 */
+  function setConceded(conceded: boolean): void {
+    if (!me.value || (me.value.conceded === true) === conceded) return
+    writeMine({ conceded })
   }
 
   function updateProfile(profile: Profile): void {
-    const current = me.value
-    if (!current) return
-    players.value[current.playerId] = {
-      ...current,
-      name: profile.name,
-      avatar: profile.avatar,
-      version: current.version + 1,
-      updatedAt: Date.now(),
-    }
-    scheduleBroadcast()
-    persist()
+    writeMine({ name: profile.name, avatar: profile.avatar })
   }
 
   function view(playerId: string): void {
@@ -405,6 +401,7 @@ export const useRoomStore = defineStore('room', () => {
     applyQuickAction,
     undo,
     resetMine,
+    setConceded,
     updateProfile,
     view,
     rebroadcast,

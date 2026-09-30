@@ -27,21 +27,27 @@ const canIncrease = computed(() => props.value < props.definition.max)
 const quickActions = computed(() => props.actions ?? [])
 
 /**
- * 读数降一档的阈值。加减键是定宽的，三位数的 64px 读数会撑破中间那一格，
- * 所以破百之后落到下一档 —— 仍在三档之内，不引入流体字号。
+ * 读数降一档的阈值。加减键是定宽的，三个字符的 64px 读数会撑破中间那一格，
+ * 所以破百或低于 −9 之后落到下一档 —— 仍在三档之内，不引入流体字号。负号也算一个字符。
  */
-const WIDE_VALUE = 100
-const readoutSize = computed(() => (props.value >= WIDE_VALUE ? 'text-num-m' : 'text-num-l'))
+const WIDE_GLYPHS = 3
+const readoutSize = computed(() =>
+  String(props.value).length >= WIDE_GLYPHS ? 'text-num-m' : 'text-num-l',
+)
 
 /**
  * 每行的身份由这支资源色承担：名称块与两枚主步进键实心同色，快捷行动是同色空心框，
  * 三行之间靠颜色分开。实心＝主要、空心＝次要，资源色＝属于这支资源、石墨＝通用步进。
  * 资源色是预印的底材，读数仍然是石墨那支笔。
+ * 资源色可能是浅色，所以压在实色上的字取 onColor；空心框落在纸上，字一律石墨。
  *
  * 色值走 CSS 变量而不是内联 background —— 内联样式优先级最高，
  * 会盖掉 `.tap:disabled` 的灰底，到达上下限的键就不会变灰。
  */
-const rowInk = computed(() => ({ '--key-ink': props.definition.color }))
+const rowInk = computed(() => ({
+  '--key-ink': props.definition.color,
+  '--key-on': props.definition.onColor,
+}))
 
 /** 主步进是实心压印键，副步进是空心框；这个材质差对每个资源都一样 */
 const isMainKey = (step: number) => step === mainStep.value
@@ -87,7 +93,7 @@ watch(
       行动键已经搬到读数正下方，标题行右端空了出来，注解放回这里省掉整整一行。
     -->
     <div class="flex items-center gap-2">
-      <h3 class="lead bg-[var(--key-ink)] px-2.5 py-0.5 text-paper">
+      <h3 class="lead bg-[var(--key-ink)] px-2.5 py-0.5 text-[var(--key-on)]">
         {{ definition.name }}
       </h3>
       <span v-if="isHero" class="label-cn font-normal text-pencil">排行依据</span>
@@ -113,7 +119,7 @@ watch(
           class="tap tabular flex items-center justify-center border-2 font-bold"
           :class="
             isMainKey(step)
-              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-paper max-[380px]:h-14 max-[380px]:w-14'
+              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-[var(--key-on)] max-[380px]:h-14 max-[380px]:w-14'
               : 'h-13 w-13 border-graphite bg-paper text-body text-graphite max-[380px]:h-12 max-[380px]:w-12'
           "
           :disabled="!canDecrease"
@@ -153,7 +159,7 @@ watch(
           class="tap tabular flex items-center justify-center border-2 font-bold"
           :class="
             isMainKey(step)
-              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-paper max-[380px]:h-14 max-[380px]:w-14'
+              ? 'tap-solid h-16 w-16 border-[var(--key-ink)] bg-[var(--key-ink)] text-num-s text-[var(--key-on)] max-[380px]:h-14 max-[380px]:w-14'
               : 'h-13 w-13 border-graphite bg-paper text-body text-graphite max-[380px]:h-12 max-[380px]:w-12'
           "
           :disabled="!canIncrease"
@@ -169,7 +175,7 @@ watch(
     <!--
       回合行动落在这个数的正下方，和它对齐 —— 它改的就是这个数。
       与两侧的步进键分层：步进是「改一点」，行动是游戏里的一步，
-      所以是同色空心框而不是实心键。
+      所以是同色空心框而不是实心键。框里的字落在纸上，用石墨而不是资源色，浅色资源也读得出。
     -->
     <div v-if="editable && quickActions.length" class="flex justify-center gap-2">
       <!--
@@ -180,7 +186,7 @@ watch(
         v-for="action in quickActions"
         :key="action.id"
         type="button"
-        class="tap-stamp min-h-12 min-w-0 max-w-64 flex-1 border-2 border-[var(--key-ink)] bg-paper px-6 text-body font-bold text-[var(--key-ink)]"
+        class="tap-stamp min-h-12 min-w-0 max-w-64 flex-1 border-2 border-[var(--key-ink)] bg-paper px-6 text-body font-bold text-graphite"
         :data-testid="`quick-${action.id}`"
         @click="emit('quick', action.id)"
       >

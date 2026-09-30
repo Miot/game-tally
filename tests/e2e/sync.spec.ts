@@ -35,14 +35,16 @@ test.describe('真实中继同步', () => {
     await expect(a.getByTestId('connection-badge')).toHaveText(/1 人在线/, { timeout: 40_000 })
     await expect(b.getByTestId('connection-badge')).toHaveText(/1 人在线/, { timeout: 40_000 })
 
-    await a.getByTestId('counter-survivors-dec-5').click()
+    await a.getByTestId('counter-survivors-dec-4').click()
     await a.getByTestId('quick-mine').click()
 
+    // 全桌默认折起，展开才有逐人的行
+    await b.getByTestId('table-summary').click()
     const chipOfA = b.locator('[data-testid^="chip-"]').filter({ hasText: '阿波罗' })
-    await expect(chipOfA).toContainText('25', { timeout: 20_000 })
+    await expect(chipOfA).toContainText('26', { timeout: 20_000 })
     await chipOfA.click()
     await expect(b.getByTestId('readonly-banner')).toBeVisible()
-    await expect(b.getByTestId('counter-survivors-value')).toHaveText('25')
+    await expect(b.getByTestId('counter-survivors-value')).toHaveText('26')
     await expect(b.getByTestId('counter-money-value')).toHaveText('8')
     await expect(b.getByTestId('counter-survivors-dec-1')).toHaveCount(0)
 
