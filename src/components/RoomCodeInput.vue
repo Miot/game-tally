@@ -33,13 +33,18 @@ function focusAt(index: number): void {
   boxes.value[Math.max(0, Math.min(index, ROOM_CODE_LENGTH - 1))]?.focus()
 }
 
-function onInput(event: Event): void {
+function onInput(event: Event, index: number): void {
   const target = event.target as HTMLInputElement
   // 受控渲染：这一格的字符由 model 决定，输入只用来取新按下的字符
   const typed = sanitize(target.value)
-  target.value = ''
-  if (!typed) return
-  model.value = (model.value + typed).slice(0, ROOM_CODE_LENGTH)
+  const next = typed ? (model.value + typed).slice(0, ROOM_CODE_LENGTH) : model.value
+  // 直接把这一格的终值写进 DOM，让 Vue 的 :value 对账成为空操作。
+  // 若先清空再等 Vue 写回，iOS WebKit（含微信）在最后一格会把输入法的
+  // 候选态和程序改值搅在一起，DOM 里有字但屏幕上不画 —— 前三格因为焦点
+  // 跳走触发了重绘才侥幸正常。
+  const shown = next[index] ?? ''
+  if (target.value !== shown) target.value = shown
+  if (next !== model.value) model.value = next
 }
 
 function onKeydown(event: KeyboardEvent, index: number): void {
@@ -91,12 +96,13 @@ watch(
       inputmode="text"
       autocapitalize="characters"
       autocomplete="off"
+      autocorrect="off"
       spellcheck="false"
       maxlength="1"
       class="code-box tabular h-18 min-w-0 flex-1 border-2 border-graphite bg-paper text-center text-num-m font-bold text-graphite caret-transparent focus:border-mark"
       :aria-label="`房间号第 ${index + 1} 位`"
       :data-testid="`room-code-box-${index}`"
-      @input="onInput"
+      @input="onInput($event, index)"
       @keydown="onKeydown($event, index)"
       @focus="onFocus(index)"
     />
