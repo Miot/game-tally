@@ -110,19 +110,50 @@ test.describe('房间流程', () => {
     // 没填满之前不能提交
     await expect(page.getByTestId('join-room')).toBeDisabled()
 
-    await page.getByTestId('room-code-box-0').click()
-    await page.keyboard.type('K7PQ')
-    // 逐格落位，光标自己往后走
-    await expect(page.getByTestId('room-code-box-0')).toHaveValue('K')
-    await expect(page.getByTestId('room-code-box-3')).toHaveValue('Q')
+    const boxes = [0, 1, 2, 3].map((index) => page.getByTestId(`room-code-box-${index}`))
+    const expectBoxes = async (code: string) => {
+      for (const [index, box] of boxes.entries()) await expect(box).toHaveText(code[index] ?? '')
+    }
+
+    await page.getByTestId('room-code-input').click()
+    // 一键只落一格；小写转大写，字母表之外的 o / 0 被剔掉
+    await page.keyboard.type('k')
+    await expectBoxes('K')
+    await page.keyboard.type('7o0pq')
+    await expectBoxes('K7PQ')
     await expect(page.getByTestId('join-room')).toBeEnabled()
+
+    // 填满后再敲不进字
+    await page.keyboard.type('Z')
+    await expectBoxes('K7PQ')
 
     // 退格删最后一位，按钮跟着禁用
     await page.keyboard.press('Backspace')
-    await expect(page.getByTestId('room-code-box-3')).toHaveValue('')
+    await expectBoxes('K7P')
     await expect(page.getByTestId('join-room')).toBeDisabled()
 
+    // 方向键挪不走插入点，新字仍接在串尾
+    await page.keyboard.press('ArrowLeft')
     await page.keyboard.type('Q')
+    await expectBoxes('K7PQ')
+    await page.getByTestId('join-room').click()
+    await expect(page).toHaveURL(/#\/r\/K7PQ$/)
+  })
+
+  test('粘贴带分隔符的房间号整串替换', async ({ page }) => {
+    await page.goto('./')
+    await page.getByTestId('room-code-input').click()
+    await page.keyboard.type('AB')
+
+    await page.getByTestId('room-code-input').evaluate((input) => {
+      const clipboardData = new DataTransfer()
+      clipboardData.setData('text', '房间号 k7-pq，快来')
+      input.dispatchEvent(
+        new ClipboardEvent('paste', { clipboardData, bubbles: true, cancelable: true }),
+      )
+    })
+
+    await expect(page.getByTestId('room-code-input')).toHaveValue('K7PQ')
     await page.getByTestId('join-room').click()
     await expect(page).toHaveURL(/#\/r\/K7PQ$/)
   })
