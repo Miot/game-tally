@@ -501,3 +501,30 @@ DESIGN.md 新增 **The One Screen Rule**：房间页在目标视口内必须一�
 - 临时装了 Playwright WebKit，用 iPhone 14 配置跑同一组 6 项，全部通过；390 宽截图目检四格与改前一致（格高 72px，红框落在待填格，文档宽度 = 视口宽度）。
 - **未能验证**：桌面 WebKit 不带 iOS 软键盘，「一键落两格」与「第四位不显示」本机都复现不了，最终以用户真机复验为准。
 
+### 第三轮：输入三个字母，第四格自动冒出第一个字母（提交 7c0af3b）
+用户在 6e79c6e 上线后反馈：「我输入三个字母，第四个字母自动填充了第一个字母的，又有新问题啊」。
+
+- 停手复盘。三轮现象放在一起：有字不画 → 一键落两格 → 凭空多出一位。前两轮我都假设是英文键盘、把原因归到「挪焦点」上，这个假设从没被证实。
+- 查证（WebSearch）：
+  - WebKit 164369：输入法组字期间程序改 input 的值会打断组字，iOS 上键盘会卡在旧的组字状态；Safari 改值即取消组字并移除标记文字。https://bugs.webkit.org/show_bug.cgi?id=164369
+  - WebKit 布局测试 input-maxlength-ime-completed：组字期间允许超出 maxlength，落定时再截断。https://webkit.googlesource.com/WebKit/+/master/LayoutTests/fast/forms/input-maxlength-ime-completed.html
+  - 掘金《移动端中文输入法 input 事件》：iOS 拼音未选字前即触发 input，需用 compositionstart / compositionend 区分。https://juejin.cn/post/6844903937288437768
+- 统一解释：用户用的是中文拼音键盘，敲的字母是「组字中」的文字，音节之间还带空格。
+  - 原始版本：每键清空焦点框 → 打断组字 → 第四格有字不画。
+  - 7b089ca：不清空了 → 挪焦点时组字被提交一次 → 一键落两格。
+  - 6e79c6e：单输入框，但值里一出现空格就判定「有非法字符」并回写 → 仍是组字中途改值 → 键盘把旧拼音串再插一遍，被 maxlength=4 截到只剩第一个字母 → 「ABC」变「ABCA」。
+- 旁证：本轮新写的组字用例第一次误跑在旧构建上（见下「教训」），在 Chromium 里就复现了 maxlength 的那一半 —— 组字「k q p r s」落定后输入框只剩「KQ」。
+- 改法（只动 `RoomCodeInput.vue`）：
+  - 自己用 compositionstart / compositionend 记组字状态；组字期间只读值更新格子，不回写、不动选区、方向键放行给输入法。
+  - compositionend 之后延后一拍再清理；失焦时也收尾（WebKit 失焦打断组字不发 compositionend）。
+  - 去掉 maxlength，长度由 `normalizeRoomCode` 保证；填满后再敲的字符在非组字时清掉。
+  - `inputmode="email"` 向系统要纯英文键盘（type 仍为 text，自动大写才生效），让中文键盘用户直接落在英文布局上，绕开组字。iOS 是否一定切走拼音未能证实，所以组字路径本身也必须正确。
+- 教训一：上一轮截图后用 `pkill -f "vite preview"` 关预览服务没关掉（实际命令行是 `vite.js preview`），Playwright 配了 reuseExistingServer，下一次 e2e 就跑在旧 dist 上。以后跑 e2e 前先用 `lsof -iTCP:4173` 确认端口空闲。6e79c6e 提交前的 e2e 不受影响（那次端口确认过是空的）。
+- 教训二：7c0af3b 的提交信息写了「DESIGN.md 已改写」，但改文档的脚本当时因编码报错没执行，文档改动实际在紧随其后的文档提交里。
+
+### 验证（第三轮）
+- 类型检查、lint、Prettier、单测 14 项通过。
+- e2e 房间流程 7 项通过（Chromium）。新增组字用例：用 CDP `Input.imeSetComposition` 模拟拼音键盘，断言三个字母只落三格、组字中输入框原样不被回写、超长只取前四位、落定后才清理、清理后退格一次删一位。
+- iPhone 14 配置的 WebKit 跑同一组：6 项通过，组字用例跳过（依赖 CDP）。
+- **未能验证**：iOS 软键盘的真实事件序列。「拼音键盘」是由三轮现象加文档反推的，尚未向用户确认。
+
