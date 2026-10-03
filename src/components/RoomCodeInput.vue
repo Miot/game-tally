@@ -6,10 +6,16 @@ import { normalizeRoomCode, ROOM_CODE_LENGTH } from '@/utils/room-code'
 /**
  * 房间号四格：预印在纸上的四个空格，一格一个字符。
  *
- * 四个格子只管显示，接字的是盖在它们上面的一个透明输入框，整串房间号都在它里面。
- * 不做成「四个输入框、敲一位挪一次焦点」：iOS WebKit（含微信）的键盘手里还握着刚敲的
- * 字母时，挪焦点会让它把字母再交一遍，改焦点框的值又会让它有字不画。单个输入框既不挪
- * 焦点、也不逐键改值，退格与长按粘贴也都是浏览器原生的。
+ * 四个格子只管显示，接字的是盖在它们上面的一个透明输入框。输入框里是键盘交来的原样
+ * 文字，格子里显示的是它过滤后的房间号。
+ *
+ * 唯一的硬约束：输入法组字期间（中文拼音键盘敲字母时，字母就是组字中的文字）不碰输入框
+ * —— 不改值、不挪焦点、不动选区。iOS WebKit（含微信）在组字中途被改值后，键盘仍握着
+ * 旧的拼音串，会把它再插一遍，表现为一键落两格、凭空多出一位、有字不画。因此：
+ * - 不做成四个输入框逐格挪焦点；
+ * - 不设 maxlength：组字落定时浏览器会按它截断带空格的拼音串，吃掉后面的字母，
+ *   长度改由过滤函数保证；
+ * - 非法字符与超长部分只在没有组字时才从输入框里清掉。
  *
  * 值始终是一段连续的字符串，第 n 格就是第 n 个字符；插入点收在串尾，红框落在下一个待填格。
  */
@@ -17,6 +23,8 @@ const model = defineModel<string>({ required: true })
 
 const field = ref<HTMLInputElement | null>(null)
 const focused = ref(false)
+/** 输入法是否正在组字；自己记，不依赖 InputEvent.isComposing 在各家 WebView 里是否可靠 */
+let composing = false
 
 const chars = computed(() =>
   Array.from({ length: ROOM_CODE_LENGTH }, (_, index) => model.value[index] ?? ''),
@@ -28,17 +36,29 @@ const cursor = computed(() => Math.min(model.value.length, ROOM_CODE_LENGTH - 1)
 /** 会把插入点挪离串尾的按键：值只在串尾增删，所以一律不放行 */
 const CARET_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'])
 
-function onInput(event: Event): void {
-  const target = event.target as HTMLInputElement
-  const code = normalizeRoomCode(target.value)
+/** 把输入框里的原样文字过滤成房间号；没有组字时顺手把输入框里多余的字符清掉 */
+function sync(): void {
+  const el = field.value
+  if (!el) return
+  const code = normalizeRoomCode(el.value)
   model.value = code
-  // 只在剔掉了非法字符时回写，仅大小写不同不碰输入框；输入法组字中途也不碰，
-  // 改值会打断组字，留到 compositionend 再收拾。
-  const composing = event instanceof InputEvent && event.isComposing
-  if (!composing && target.value.toUpperCase() !== code) target.value = code
+  // 仅大小写不同不回写，少碰一次输入框
+  if (!composing && el.value.toUpperCase() !== code) el.value = code
+}
+
+function onCompositionStart(): void {
+  composing = true
+}
+
+function onCompositionEnd(): void {
+  composing = false
+  // 等输入法把这一轮收完再清理，不在它的回调里改值
+  setTimeout(sync)
 }
 
 function onKeydown(event: KeyboardEvent): void {
+  // 组字时方向键归输入法选词用
+  if (composing || event.isComposing) return
   if (CARET_KEYS.has(event.key)) event.preventDefault()
 }
 
@@ -53,6 +73,7 @@ function onPaste(event: ClipboardEvent): void {
 
 /** 插入点收在串尾：点哪一格，敲下去的字都接在已填的后面 */
 function caretToEnd(): void {
+  if (composing) return
   const end = field.value?.value.length ?? 0
   field.value?.setSelectionRange(end, end)
 }
@@ -60,6 +81,13 @@ function caretToEnd(): void {
 function onFocus(): void {
   focused.value = true
   caretToEnd()
+}
+
+function onBlur(): void {
+  focused.value = false
+  // WebKit 在失焦打断组字时不发 compositionend，这里自己收尾
+  composing = false
+  sync()
 }
 
 onMounted(() => {
@@ -84,25 +112,29 @@ watch(model, (code) => {
     >
       {{ char }}
     </div>
-    <!-- 字号不低于 16px，否则 iOS 聚焦时会放大整页 -->
+    <!--
+      inputmode="email" 是向系统要一块纯英文键盘：房间号只有字母数字，中文键盘的候选栏
+      只会添乱。type 仍是 text，autocapitalize 才生效。
+      字号不低于 16px，否则 iOS 聚焦时会放大整页。
+    -->
     <input
       ref="field"
       type="text"
-      inputmode="text"
+      inputmode="email"
       autocapitalize="characters"
       autocomplete="off"
       autocorrect="off"
       spellcheck="false"
-      :maxlength="ROOM_CODE_LENGTH"
       class="absolute inset-0 h-full w-full text-body opacity-0"
       aria-label="房间号，四位字母或数字"
       data-testid="room-code-input"
-      @input="onInput"
-      @compositionend="onInput"
+      @input="sync"
+      @compositionstart="onCompositionStart"
+      @compositionend="onCompositionEnd"
       @keydown="onKeydown"
       @paste="onPaste"
       @focus="onFocus"
-      @blur="focused = false"
+      @blur="onBlur"
       @click="caretToEnd"
     />
   </div>

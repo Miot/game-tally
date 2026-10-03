@@ -140,6 +140,48 @@ test.describe('房间流程', () => {
     await expect(page).toHaveURL(/#\/r\/K7PQ$/)
   })
 
+  test('拼音键盘组字时不碰输入框，落定后才清理', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', '组字事件靠 CDP 模拟，只有 Chromium 支持')
+    await page.goto('./')
+    const input = page.getByTestId('room-code-input')
+    const boxes = [0, 1, 2, 3].map((index) => page.getByTestId(`room-code-box-${index}`))
+    const expectBoxes = async (code: string) => {
+      for (const [index, box] of boxes.entries()) await expect(box).toHaveText(code[index] ?? '')
+    }
+    const client = await page.context().newCDPSession(page)
+    const compose = (text: string) =>
+      client.send('Input.imeSetComposition', {
+        text,
+        selectionStart: text.length,
+        selectionEnd: text.length,
+      })
+
+    await input.click()
+    // iOS 拼音键盘敲字母：字母以组字文字进来，音节之间带空格
+    await compose('k')
+    await expectBoxes('K')
+    await compose('k q')
+    await compose('k q p')
+    // 三个字母只落三格，输入框保持键盘交来的原样，没有被回写
+    await expectBoxes('KQP')
+    await expect(input).toHaveValue('k q p')
+
+    // 组字超出四位：格子只取前四位，输入框仍不动
+    await compose('k q p r s')
+    await expectBoxes('KQPR')
+    await expect(input).toHaveValue('k q p r s')
+    await expect(page.getByTestId('join-room')).toBeEnabled()
+
+    // 落定后才把空格与超长部分清掉
+    await client.send('Input.insertText', { text: 'k q p r s' })
+    await expect(input).toHaveValue('KQPR')
+    await expectBoxes('KQPR')
+
+    // 清理之后退格一次删一位
+    await page.keyboard.press('Backspace')
+    await expectBoxes('KQP')
+  })
+
   test('粘贴带分隔符的房间号整串替换', async ({ page }) => {
     await page.goto('./')
     await page.getByTestId('room-code-input').click()
